@@ -10,94 +10,176 @@ namespace Room.Core.Skills
 {
     public class FireballSkill: ISkill
     {
-        private readonly Hero _hero;
-        private readonly TimeLimiter _timeLimiter = new TimeLimiter(TimeSpan.FromSeconds(1.5));
+        private readonly TimeLimiter _timeLimiter;
 
         public string Name => "Сгусток огня";
 
-        public float MaxDistance => 20;
+        public float MaxDistance { get; }
+
+        public float Speed { get; }
 
         public ITimeLimiter TimeLimiter => _timeLimiter;
 
-        public FireballSkill(Hero hero)
+        public ISkillProcessFactory SkillProcessFactory { get; }
+
+        public FireballSkill(TimeSpan interval, float speed, float maxDistance, ISkillProcessFactory processFactory)
         {
-            _hero = hero ?? throw new ArgumentNullException(nameof(hero));
+            MaxDistance = maxDistance;
+            _timeLimiter = new TimeLimiter(interval);
+            SkillProcessFactory = processFactory ?? throw new ArgumentNullException(nameof(processFactory));
+            Speed = speed;
         }
 
         public IProcess Use(ISkilled initializer)
         {
-            FireballProcess fireballProcess = null;
+            IProcess fireballProcess = null;
             _timeLimiter.Do(() =>
             {
-                var initBounds = (IHasBounds) initializer;
-                var dx = _hero.Position.X - initBounds.Bounds.Position.X;
-                var dy = _hero.Position.Y - initBounds.Bounds.Position.Y;
-                var angle = new AngleF { Value = MathF.Atan2(dy, dx) };
+                if (initializer is ICreature creature)
+                    if (creature.IsDead)
+                        return;
 
-                var itemsOwner = (IChildItemsOwnerExt)initializer;
-                var fireball = new Fireball(itemsOwner);
-                itemsOwner.Add(fireball);
-                fireballProcess = new FireballProcess(fireball, angle, 3);
-                fireballProcess.Completed += FireballProcess_Completed;
+                fireballProcess = SkillProcessFactory.Create(this);
             });
             return fireballProcess;
         }
+    }
 
-        private void FireballProcess_Completed(IProcess p)
+    public interface ISkillProcessFactory
+    {
+        IProcess Create(ISkill skill);
+    }
+
+    public class BossFireballProcessFactory : ISkillProcessFactory
+    {
+        private readonly IHasBounds _initializer;
+        private readonly Game _game;
+
+        public BossFireballProcessFactory(IHasBounds initializer, Game game)
         {
-            var fireball = ((FireballProcess)p).Fireball;
-            var itemsOwner = (IChildItemsOwnerExt)fireball.Owner;
-            itemsOwner.Remove(fireball);
+            _initializer = initializer ?? throw new ArgumentNullException(nameof(initializer));
+            _game = game ?? throw new ArgumentNullException(nameof(game));
+        }
+
+        public IProcess Create(ISkill skill)
+        {
+            return new FireballProcess(_initializer, skill, _game.Hero, _game);
+        }
+    }
+
+    public class HeroFireballProcessFactory : ISkillProcessFactory
+    {
+        private readonly IHasBounds _initializer;
+        private readonly Game _game;
+
+        public HeroFireballProcessFactory(IHasBounds initializer, Game game)
+        {
+            _initializer = initializer ?? throw new ArgumentNullException(nameof(initializer));
+            _game = game ?? throw new ArgumentNullException(nameof(game));
+        }
+
+        public IProcess Create(ISkill skill)
+        {
+            var dx = skill.MaxDistance * MathF.Cos(_game.Hero.LookDirection.Value);
+            var dy = skill.MaxDistance * MathF.Sin(_game.Hero.LookDirection.Value);
+            var target = new RoundBounds(new PointF(_game.Hero.Position.X + dx, _game.Hero.Position.Y + dy), 0);
+
+            return new FireballProcess(_initializer, skill, target, _game);
         }
     }
 
     public class FireballProcess : IProcess
     {
-        private readonly AngleF _angle;
-        private readonly float _speed;
-        private readonly DateTime _startTime = DateTime.Now;
-        private readonly TimeSpan _duration = TimeSpan.FromSeconds(4);
+        private readonly IHasBounds _initializer;
+        private readonly ISkill _skill;
+        private readonly IHasPosition _target;
+        private readonly Game _game;
+        private readonly PointF _startPos;
 
         public event Action<IProcess> Completed;
 
         public Fireball Fireball { get; }
 
-        public FireballProcess(Fireball fireball, AngleF angle, float speed)
+        public FireballProcess(IHasBounds initializer, ISkill skill, IHasPosition target, Game game)
         {
-            _angle = angle ?? throw new ArgumentNullException(nameof(angle));
-            _speed = speed;
-            Fireball = fireball ?? throw new ArgumentNullException(nameof(fireball));
+            _initializer = initializer ?? throw new ArgumentNullException(nameof(initializer));
+            _skill = skill ?? throw new ArgumentNullException(nameof(skill));
+            _target = target ?? throw new ArgumentNullException(nameof(target));
+            _game = game ?? throw new ArgumentNullException(nameof(game));
+
+            Fireball = CreateFireball();
+            var itemsOwner = ((IChildItemsOwnerExt)_initializer).ChildItemsContainer;
+            itemsOwner.Add(Fireball);
+
+            _startPos = Fireball.Bounds.Position.DeepClone();
+        }
+
+        private Fireball CreateFireball()
+        {
+            var dx = _target.Position.X - _initializer.Bounds.Position.X;
+            var dy = _target.Position.Y - _initializer.Bounds.Position.Y;
+            var angle = new AngleF { Value = MathF.Atan2(dy, dx) };
+
+            var container = ((IChildItemsOwnerExt)_initializer).ChildItemsContainer;
+            var fireball = new Fireball(container, ((FireballSkill)_skill).Speed, angle);
+            fireball.Bounds.Position.Set(_initializer.Bounds.Position);
+            return fireball;
         }
 
         public void Process(TimeSpan delta)
         {
-            if (DateTime.Now - _startTime > _duration)
+            var distance = _startPos.DistanceTo(Fireball.Bounds);
+            if (distance > _skill.MaxDistance)
             {
+                BeforeComplete();
                 Completed?.Invoke(this);
                 return;
             }
 
             var dt = (float)delta.TotalSeconds;
-            var x = Fireball.Bounds.Position.X + dt * _speed * MathF.Cos(_angle.Value);
-            var y = Fireball.Bounds.Position.Y + dt * _speed * MathF.Sin(_angle.Value);
+            var x = Fireball.Bounds.Position.X + dt * Fireball.Speed * MathF.Cos(Fireball.Direction.Value);
+            var y = Fireball.Bounds.Position.Y + dt * Fireball.Speed * MathF.Sin(Fireball.Direction.Value);
             Fireball.Bounds.Position.Set(x, y);
+
+            foreach (var obj in _game.GetAllBounds())
+                if (obj != _initializer)
+                    if (obj.Bounds.DoesIntersect(Fireball.Bounds))
+                    {
+                        if (obj is ICreatureExt creatureExt)
+                            creatureExt.ChangeHP(-10, (ISkilled)_initializer, _skill);
+                        BeforeComplete();
+                        Completed?.Invoke(this);
+                        return;
+                    }
+        }
+
+        private void BeforeComplete()
+        {
+            var itemsOwner = ((IChildItemsContainerExt) Fireball.Container);
+            itemsOwner.Remove(Fireball);
         }
 
         public void Stop()
         {
-            throw new NotImplementedException();
+            BeforeComplete();
         }
     }
 
-    public class Fireball: IHasBounds, IChildItem
+    public class Fireball: IHasBounds, IPhysicalObject, IChildItem
     {
         public BoundsF Bounds { get; } = new RoundBounds(new PointF(), 0.1f);
+        
+        public float Speed { get; }
+        
+        public AngleF Direction { get; }
 
-        public IChildItemsOwner Owner { get; }
+        public IChildItemsContainer Container { get; }
 
-        public Fireball(IChildItemsOwner owner)
+        public Fireball(IChildItemsContainer itemsContainer, float speed, AngleF direction)
         {
-            Owner = owner ?? throw new ArgumentNullException(nameof(owner));
+            Container = itemsContainer ?? throw new ArgumentNullException(nameof(itemsContainer));
+            Speed = speed;
+            Direction = direction;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Kalavarda.Primitives;
 using Kalavarda.Primitives.Abstract;
 using Kalavarda.Primitives.Geometry;
 using Kalavarda.Primitives.Process;
@@ -9,13 +10,15 @@ using Room.Core.Skills;
 
 namespace Room.Core.Models
 {
-    public class Boss : IHasBounds, IHasPosition, ISkilled, IChildItemsOwnerExt
+    public class Boss : IHasBounds, IHasPosition, ISkilled, IChildItemsOwner, IChildItemsOwnerExt, ICreatureExt, IPhysicalObject
     {
         private readonly ISkill[] _skills;
 
-        private readonly ICollection<IChildItem> _childItems = new List<IChildItem>();
-
         public BoundsF Bounds { get; } = new RoundBounds(new PointF(), 1.5f);
+
+        public float Speed => 0;
+
+        public AngleF Direction { get; } = new AngleF();
 
         public PointF Position => Bounds.Position;
         
@@ -23,47 +26,70 @@ namespace Room.Core.Models
 
         public Boss(Game game)
         {
-            _skills = new [] {
-                new FireballSkill(game.Hero)
-            };
+            var fireball = new FireballSkill(TimeSpan.FromSeconds(1), 4, 15, new BossFireballProcessFactory(this, game));
+            _skills = new [] { fireball };
+
+            HP.SetMax();
+            HP.ValueMin += HP_ValueMin;
         }
 
-        public void Add(IChildItem item)
+        private void HP_ValueMin(RangeF hp)
         {
-            if (item == null) throw new ArgumentNullException(nameof(item));
-            lock(_childItems)
-                _childItems.Add(item);
-            ChildItemAdded?.Invoke(this, item);
+            IsDead = true;
+            Died?.Invoke(this);
         }
 
-        public void Remove(IChildItem item)
+        public RangeF HP { get; } = new RangeF { Max = 1000 };
+
+        public bool IsAlive => !IsDead;
+
+        public bool IsDead { get; private set; }
+
+        public event Action<ICreature> Died;
+
+        public void ChangeHP(float value, ISkilled initializer, ISkill skill)
         {
-            if (item == null) throw new ArgumentNullException(nameof(item));
-            lock (_childItems)
-                _childItems.Remove(item);
-            ChildItemRemoved?.Invoke(this, item);
+            var oldValue = HP.Value;
+            HP.Value += value;
+            HpChanged?.Invoke(new HpChange(this, HP.Value - oldValue, initializer, skill));
         }
 
-        public event Action<IChildItemsOwner, IChildItem> ChildItemAdded;
-        public event Action<IChildItemsOwner, IChildItem> ChildItemRemoved;
+        public event Action<HpChange> HpChanged;
+
+        public IChildItemsContainerExt ChildItemsContainer { get; } = new ChildItemsContainer();
+        
+        IChildItemsContainer IChildItemsOwner.ChildItemsContainer => ChildItemsContainer;
     }
 
     public class BossProcess: IProcess
     {
         private readonly Boss _boss;
+        private readonly Game _game;
         private readonly IProcessor _processor;
+
+        private bool wait = true;
 
         public event Action<IProcess> Completed;
 
-        public BossProcess(Boss boss, IProcessor processor)
+        public BossProcess(Boss boss, Game game, IProcessor processor)
         {
             _boss = boss ?? throw new ArgumentNullException(nameof(boss));
+            _game = game ?? throw new ArgumentNullException(nameof(game));
             _processor = processor ?? throw new ArgumentNullException(nameof(processor));
         }
 
         public void Process(TimeSpan delta)
         {
+            var distance = _boss.Position.DistanceTo(_game.Hero.Position);
+
+            // TODO: сделать нормально
+            if (distance > 5)
+                wait = false;
+            if (wait)
+                return;
+
             var skill = _boss.GetReadySkills()
+                .Where(sk => sk.MaxDistance >= distance)
                 .OrderByDescending(sk => sk.TimeLimiter.Interval)
                 .FirstOrDefault();
             var skillProcess = skill?.Use(_boss);

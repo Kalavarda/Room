@@ -19,10 +19,15 @@ namespace Room.Controllers
 
         private void _uiElement_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
+            if (e.Handled)
+                return;
+
             var mousePos = e.GetPosition(_uiElement);
             var dx = (float)mousePos.X - _hero.Position.X;
             var dy = (float)mousePos.Y - _hero.Position.Y;
             _hero.LookDirection.Value = MathF.Atan2(dy, dx);
+
+            e.Handled = true;
         }
     }
 }

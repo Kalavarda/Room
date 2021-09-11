@@ -19,7 +19,7 @@ namespace Room
 
         public AppContext()
         {
-            Processor = new MultiProcessor(60, _cancellationTokenSource.Token) { Paused = true };
+            Processor = new MultiProcessor(60, _cancellationTokenSource.Token);
         }
 
         public void Dispose()

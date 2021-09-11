@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using Kalavarda.Primitives;
 using Kalavarda.Primitives.Geometry;
 using Room.Core.Models;
 
@@ -35,26 +34,28 @@ namespace Room.Controllers
                 case Key.W:
                     _upPressed = true;
                     _downPressed = false;
+                    ProcessKeys();
                     e.Handled = true;
                     break;
                 case Key.S:
                     _downPressed = true;
                     _upPressed = false;
+                    ProcessKeys();
                     e.Handled = true;
                     break;
                 case Key.A:
                     _leftPressed = true;
                     _rightPressed = false;
+                    ProcessKeys();
                     e.Handled = true;
                     break;
                 case Key.D:
                     _rightPressed = true;
                     _leftPressed = false;
+                    ProcessKeys();
                     e.Handled = true;
                     break;
             }
-
-            ProcessKeys();
         }
 
         private void UiElement_KeyUp(object sender, KeyEventArgs e)
@@ -90,19 +91,29 @@ namespace Room.Controllers
             switch (_mode)
             {
                 case Mode.Simple:
-                    ProcessSimple(_hero.MoveDirection, _hero.MoveSpeed);
+                    ProcessSimple(_hero.MoveDirection);
                     break;
 
                 case Mode.ByLook:
-                    ProcessByLook(_hero.MoveDirection, _hero.MoveSpeed);
+                    ProcessByLook(_hero.MoveDirection);
                     break;
 
                 default:
                     throw new NotImplementedException();
             }
+
+            SetSpeed();
         }
 
-        private void ProcessSimple(AngleF direction, RangeF speed)
+        private void SetSpeed()
+        {
+            if (_hero.IsAlive && (_upPressed || _downPressed || _leftPressed || _rightPressed))
+                _hero.MoveSpeed.SetMax();
+            else
+                _hero.MoveSpeed.SetMin();
+        }
+
+        private void ProcessSimple(AngleF direction)
         {
             if (_upPressed)
             {
@@ -126,14 +137,9 @@ namespace Room.Controllers
                 direction.ValueInDegrees = 180;
             else if (_rightPressed)
                 direction.ValueInDegrees = 0;
-
-            if (_upPressed || _downPressed || _leftPressed || _rightPressed)
-                speed.SetMax();
-            else
-                speed.SetMin();
         }
 
-        private void ProcessByLook(AngleF direction, RangeF speed)
+        private void ProcessByLook(AngleF direction)
         {
             if (_upPressed)
             {
@@ -157,11 +163,6 @@ namespace Room.Controllers
                 direction.ValueInDegrees = _hero.LookDirection.ValueInDegrees - 90;
             else if (_rightPressed)
                 direction.ValueInDegrees = _hero.LookDirection.ValueInDegrees + 90;
-
-            if (_upPressed || _downPressed || _leftPressed || _rightPressed)
-                speed.SetMax();
-            else
-                speed.SetMin();
         }
 
         public enum Mode

@@ -18,8 +18,8 @@ namespace Room
 
         private void MainWindow_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            _appContext.Processor.Add(new HeroMoveProcess(_appContext.Game.Hero));
-            _appContext.Processor.Add(new BossProcess(_appContext.Game.Boss, _appContext.Processor));
+            _appContext.Processor.Add(new HeroMoveProcess(_appContext.Game.Hero, _appContext.Game.Arena));
+            _appContext.Processor.Add(new BossProcess(_appContext.Game.Boss, _appContext.Game, _appContext.Processor));
 
             var gameWindow = new GameWindow(_appContext) { Owner = this };
             gameWindow.ShowDialog();

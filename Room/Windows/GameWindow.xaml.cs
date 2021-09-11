@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using Kalavarda.Primitives.Geometry;
 using Room.Controllers;
 
 namespace Room.Windows
@@ -9,8 +8,6 @@ namespace Room.Windows
     public partial class GameWindow
     {
         private readonly AppContext _appContext;
-
-        public PointF MouseWorldPosition { get; } = new PointF();
 
         public GameWindow()
         {
@@ -21,13 +18,17 @@ namespace Room.Windows
         {
             _appContext = appContext ?? throw new ArgumentNullException(nameof(appContext));
 
+            _heroHP.Range = appContext.Game.Hero.HP;
+            _bossHP.Range = appContext.Game.Boss.HP;
+
             Loaded += GameWindow_Loaded;
         }
 
-        private void GameWindow_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        private void GameWindow_Loaded(object sender, RoutedEventArgs e)
         {
             _gameControl.AppContext = _appContext;
-            new HeroMoveController(_appContext.Game.Hero, this, HeroMoveController.Mode.ByLook);
+            new HeroMoveController(_appContext.Game.Hero, this, HeroMoveController.Mode.Simple);
+            new SkillController(_appContext.Game.Hero, this, _appContext.Processor);
 
             TuneControls();
         }

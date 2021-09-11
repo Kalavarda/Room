@@ -19,16 +19,16 @@ namespace Room.Controllers
         private readonly IDictionary<IChildItem, UIElement> _uiElements = new ConcurrentDictionary<IChildItem, UIElement>();
         private readonly IDictionary<IChildItem, PositionController> _positionController = new ConcurrentDictionary<IChildItem, PositionController>();
 
-        public ChildItemsController(IChildItemsOwner childItemsOwner, IChildUiElementFactory uiElementFactory, Panel panel)
+        public ChildItemsController(IChildItemsContainer childItemsContainer, IChildUiElementFactory uiElementFactory, Panel panel)
         {
             _uiElementFactory = uiElementFactory ?? throw new ArgumentNullException(nameof(uiElementFactory));
             _panel = panel ?? throw new ArgumentNullException(nameof(panel));
 
-            childItemsOwner.ChildItemAdded += ChildItemsOwner_ChildItemAdded;
-            childItemsOwner.ChildItemRemoved += ChildItemsOwner_ChildItemRemoved;
+            childItemsContainer.ChildItemAdded += ChildItemsOwner_ChildItemAdded;
+            childItemsContainer.ChildItemRemoved += ChildItemsOwner_ChildItemRemoved;
         }
 
-        private void ChildItemsOwner_ChildItemAdded(IChildItemsOwner itemsOwner, IChildItem childItem)
+        private void ChildItemsOwner_ChildItemAdded(IChildItemsContainer itemsContainer, IChildItem childItem)
         {
             _panel.Do(() =>
             {
@@ -47,7 +47,7 @@ namespace Room.Controllers
             });
         }
 
-        private void ChildItemsOwner_ChildItemRemoved(IChildItemsOwner itemsOwner, IChildItem childItem)
+        private void ChildItemsOwner_ChildItemRemoved(IChildItemsContainer itemsContainer, IChildItem childItem)
         {
             _panel.Do(() =>
             {
