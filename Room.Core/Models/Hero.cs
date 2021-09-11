@@ -4,9 +4,9 @@ using Kalavarda.Primitives.Geometry;
 
 namespace Room.Core.Models
 {
-    public class Hero: IHasPosition
+    public class Hero: IHasPosition, IHasBounds
     {
-        public PointF Position { get; } = new PointF();
+        public PointF Position => Bounds.Position;
 
         public AngleF LookDirection { get; } = new AngleF();
 
@@ -14,6 +14,8 @@ namespace Room.Core.Models
 
         public RangeF MoveSpeed { get; } = new RangeF { Max = 2 * 5000f / 3600 };
 
-        public SizeF Size { get; } = new SizeF { Width = 0.6f, Height = 0.6f };
+        public SizeF Size => Bounds.Size;
+        
+        public BoundsF Bounds { get; } = new RoundBounds(new PointF(), 0.6f);
     }
 }

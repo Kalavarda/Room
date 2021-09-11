@@ -4,14 +4,10 @@
         xmlns:controls="clr-namespace:Room.Controls"
         Title="GameWindow" WindowState="Maximized" ShowInTaskbar="False" Background="Black">
 
-    <Grid x:Name="_root" Background="#01808080">
-        <Canvas x:Name="_canvas" MouseMove="_canvas_OnMouseMove">
-            <Canvas.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform x:Name="_scaleTransform"/>
-                    <TranslateTransform x:Name="_translateTransform"/>
-                </TransformGroup>
-            </Canvas.RenderTransform>
-        </Canvas>
+    <Grid>
+        <controls:GameControl x:Name="_gameControl"/>
+        <Border x:Name="_bPause" Background="#80000000" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" Padding="10">
+            <TextBlock Text="П А У З А" Foreground="Yellow"/>
+        </Border>
     </Grid>
 </Window>
