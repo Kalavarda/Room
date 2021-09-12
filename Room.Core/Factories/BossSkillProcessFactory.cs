@@ -2,6 +2,7 @@
 using Kalavarda.Primitives.Abstract;
 using Kalavarda.Primitives.Process;
 using Kalavarda.Primitives.Skills;
+using Kalavarda.Primitives.Utils;
 using Room.Core.Abstract;
 using Room.Core.Models;
 using Room.Core.Skills;
@@ -25,7 +26,7 @@ namespace Room.Core.Factories
                 return new FireballProcess((IHasBounds)initializer, fireball, _game.Hero, _game, _soundPlayer);
 
             if (skill is RoundAreaSkill rAreaSkill)
-                return new RoundAreaProcess(initializer, rAreaSkill, _game, _soundPlayer);
+                return new RoundAreaProcess(initializer, rAreaSkill, _game, _soundPlayer, RandomImpl.Instance);
 
             throw new NotImplementedException();
         }

@@ -8,7 +8,7 @@
     <Grid>
         <controls:GameControl x:Name="_gameControl"/>
         
-        <controls1:RangeControl x:Name="_heroHP" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="50" Width="400" Height="40" MainBrush="Green"/>
+        <controls1:RangeControl x:Name="_heroHP" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="100" Width="400" Height="40" MainBrush="Green"/>
         
         <controls1:RangeControl x:Name="_bossHP" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="50" Width="400" Height="40" MainBrush="Maroon"/>
         
@@ -16,6 +16,15 @@
 
         <controls:LogControl x:Name="_log" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="320" Height="160"/>
         
+        <Border HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="50">
+            <StackPanel Orientation="Horizontal">
+                <controls1:SkillControl x:Name="_skillControl1" Margin="2"/>
+                <controls1:SkillControl x:Name="_skillControl2" Margin="2"/>
+                <controls1:SkillControl x:Name="_skillControl3" Margin="2"/>
+                <controls1:SkillControl x:Name="_skillControl4" Margin="2"/>
+            </StackPanel>
+        </Border>
+
         <Border x:Name="_bPause" Background="#80000000" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" Padding="10">
             <TextBlock Text="П А У З А" Foreground="Yellow"/>
         </Border>

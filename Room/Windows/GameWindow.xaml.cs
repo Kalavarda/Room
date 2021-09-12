@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Input;
 using Kalavarda.Primitives.WPF;
 using Room.Controllers;
-using Room.Core.Abstract;
 using Room.Core.Models;
 using Room.Processes;
 
@@ -49,6 +48,18 @@ namespace Room.Windows
             _heroHP.Range = hero.HP;
             _XP.Range = hero.XP;
             _log.ItemsContainer = hero.ItemsContainer;
+
+            _skillControl1.Skill = _appContext.HeroSkillBinds.GetSkill(Hero.SkillKey_Fireball);
+            _skillControl1.Bind = _appContext.HeroSkillBinds.GetBind(Hero.SkillKey_Fireball);
+
+            _skillControl2.Skill = _appContext.HeroSkillBinds.GetSkill(Hero.SkillKey_Healing);
+            _skillControl2.Bind = _appContext.HeroSkillBinds.GetBind(Hero.SkillKey_Healing);
+
+            _skillControl3.Skill = _appContext.HeroSkillBinds.GetSkill(Hero.SkillKey_Teleport_Backward);
+            _skillControl3.Bind = _appContext.HeroSkillBinds.GetBind(Hero.SkillKey_Teleport_Backward);
+
+            _skillControl4.Skill = _appContext.HeroSkillBinds.GetSkill(Hero.SkillKey_Teleport_Forward);
+            _skillControl4.Bind = _appContext.HeroSkillBinds.GetBind(Hero.SkillKey_Teleport_Forward);
 
             TuneControls();
         }

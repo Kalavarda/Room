@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Kalavarda.Primitives.Abstract;
 using Kalavarda.Primitives.Geometry;
 using Kalavarda.Primitives.Process;
 using Kalavarda.Primitives.Skills;
+using Kalavarda.Primitives.Utils;
 using Room.Core.Abstract;
 using Room.Core.Models;
 
@@ -19,11 +21,15 @@ namespace Room.Core.Skills
 
         public float HpChange { get; }
 
-        public RoundAreaSkill(float maxDistance, TimeSpan interval, TimeSpan waitTime, float hpChange, ISkillProcessFactory processFactory)
-            :base(maxDistance, interval, processFactory)
+        public float Count { get; }
+
+        public RoundAreaSkill(float maxDistance, TimeSpan interval, TimeSpan waitTime, float hpChange, float count,
+            ISkillProcessFactory processFactory)
+            :base(maxDistance, interval, processFactory, TimeSpan.FromSeconds(interval.TotalSeconds * RandomImpl.Instance.Double()))
         {
             WaitTime = waitTime;
             HpChange = hpChange;
+            Count = count;
         }
     }
 
@@ -35,26 +41,59 @@ namespace Room.Core.Skills
         private readonly RoundAreaSkill _skill;
         private readonly Game _game;
         private readonly ISoundPlayer _soundPlayer;
-        private readonly AreaBase _area;
+        private readonly IRandom _random;
+        private readonly ICollection<AreaBase> _areas = new List<AreaBase>();
         private readonly DateTime _startTime = DateTime.Now;
 
         public event Action<IProcess> Completed;
 
-        public RoundAreaProcess(ISkilled initializer, RoundAreaSkill skill, Game game, ISoundPlayer soundPlayer)
+        public RoundAreaProcess(ISkilled initializer, RoundAreaSkill skill, Game game, ISoundPlayer soundPlayer, IRandom random)
         {
             _initializer = initializer ?? throw new ArgumentNullException(nameof(initializer));
             _skill = skill ?? throw new ArgumentNullException(nameof(skill));
             _game = game ?? throw new ArgumentNullException(nameof(game));
             _soundPlayer = soundPlayer ?? throw new ArgumentNullException(nameof(soundPlayer));
+            _random = random ?? throw new ArgumentNullException(nameof(random));
 
-            var childItemsOwner = (IChildItemsOwnerExt)initializer;
-            var center = ((IHasBounds)_initializer).Bounds.Position;
-            _area = new RoundArea(new RoundBounds(center, skill.MaxDistance), childItemsOwner.ChildItemsContainer)
+            CreateAreas(skill, (IChildItemsOwnerExt)initializer);
+        }
+
+        private void CreateAreas(RoundAreaSkill skill, IChildItemsOwnerExt childItemsOwner)
+        {
+            var w = _game.Arena.Bounds.Width / 2;
+            var h = _game.Arena.Bounds.Height / 2;
+            var maxR = MathF.Sqrt(w * w + h * h);
+
+            for (var i = 0; i < _skill.Count; i++)
+            {
+                RoundArea area;
+                if (_skill.Count > 1)
+                {
+                    var r = maxR * _random.Float();
+                    var a = 2 * MathF.PI * _random.Float();
+                    var x = _game.Arena.Bounds.Position.X + r * MathF.Cos(a);
+                    var y = _game.Arena.Bounds.Position.Y + r * MathF.Sin(a);
+                    area = CreateArea(skill, new PointF(x, y), childItemsOwner);
+                }
+                else
+                {
+                    var center = ((IHasBounds) _initializer).Bounds.Position;
+                    area = CreateArea(skill, center, childItemsOwner);
+                }
+
+                _areas.Add(area);
+            }
+        }
+
+        private RoundArea CreateArea(RoundAreaSkill skill, PointF center, IChildItemsOwnerExt childItemsOwner)
+        {
+            var area = new RoundArea(new RoundBounds(center, skill.MaxDistance / skill.Count), childItemsOwner.ChildItemsContainer)
             {
                 FullRemain = _skill.WaitTime,
                 Remain = _skill.WaitTime
             };
-            childItemsOwner.ChildItemsContainer.Add(_area);
+            childItemsOwner.ChildItemsContainer.Add(area);
+            return area;
         }
 
         public void Process(TimeSpan delta)
@@ -71,15 +110,17 @@ namespace Room.Core.Skills
             {
                 _soundPlayer.Play(Blow);
                 foreach (var b in _game.GetAllBounds())
-                    if (_area.Bounds.DoesIntersect(b.Bounds))
-                        if (b is ICreatureExt creature)
-                            if (creature != _initializer)
-                                creature.ChangeHP(_skill.HpChange, _initializer, _skill);
+                    foreach (var area in _areas)
+                        if (area.Bounds.DoesIntersect(b.Bounds))
+                            if (b is ICreatureExt creature)
+                                if (creature != _initializer)
+                                    creature.ChangeHP(_skill.HpChange, _initializer, _skill);
                 BeforeComplete();
                 Completed?.Invoke(this);
             }
 
-            _area.Remain = _startTime + _skill.WaitTime - DateTime.Now;
+            foreach (var area in _areas)
+                area.Remain = _startTime + _skill.WaitTime - DateTime.Now;
         }
 
         public void Stop()
@@ -91,7 +132,8 @@ namespace Room.Core.Skills
         private void BeforeComplete()
         {
             var childItemsOwner = (IChildItemsOwnerExt) _initializer;
-            childItemsOwner.ChildItemsContainer.Remove(_area);
+            foreach (var area in _areas)
+                childItemsOwner.ChildItemsContainer.Remove(area);
         }
     }
 

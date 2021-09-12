@@ -20,27 +20,21 @@ namespace Room
         public IReadOnlyCollection<SkillBind> SkillBinds { get; } = new []
         {
             new SkillBind(Hero.SkillKey_Fireball, Key.D1),
+            new SkillBind(Hero.SkillKey_Fireball, null, MouseButton.Left),
             new SkillBind(Hero.SkillKey_Teleport_Forward, Key.D5),
             new SkillBind(Hero.SkillKey_Teleport_Forward, null, MouseButton.Middle),
-            new SkillBind(Hero.SkillKey_Teleport_Backward, Key.C)
+            new SkillBind(Hero.SkillKey_Teleport_Backward, Key.C),
+            new SkillBind(Hero.SkillKey_Healing, Key.D2)
         };
 
         public ISkill GetSkill(string key)
         {
-            switch (key)
-            {
-                case Hero.SkillKey_Fireball:
-                    return _hero.Skills.First();
+            return (ISkill)_hero.Skills.OfType<IHasKey>().First(sk => sk.Key == key);
+        }
 
-                case Hero.SkillKey_Teleport_Forward:
-                    return _hero.Skills.Skip(1).First();
-
-                case Hero.SkillKey_Teleport_Backward:
-                    return _hero.Skills.Skip(2).First();
-
-                default:
-                    throw new NotImplementedException();
-            }
+        public SkillBind GetBind(string key)
+        {
+            return SkillBinds.FirstOrDefault(sb => sb.SkillKey == key);
         }
     }
 }
