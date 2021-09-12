@@ -3,6 +3,9 @@ using System.Threading;
 using Kalavarda.Primitives.Process;
 using Kalavarda.Primitives.WPF.Abstract;
 using Kalavarda.Primitives.WPF.Skills;
+using Room.Core.Abstract;
+using Room.Core.Factories;
+using Room.Core.Impl;
 using Room.Core.Models;
 using Room.Factories;
 
@@ -20,11 +23,21 @@ namespace Room
 
         public IChildUiElementFactory ChildUiElementFactory { get; } = new UiElementFactory();
 
+        public IAwardsSource AwardsSource { get; }
+
+        public IFinesSource FinesSource { get; }
+
+        public IArenaFactory ArenaFactory { get; }
+
         public AppContext()
         {
-            Game = new Game(new SoundPlayer());
+            var soundPlayer = new SoundPlayer();
+            Game = new Game(soundPlayer);
+            AwardsSource = new AwardSource(Game.Hero);
+            FinesSource = new FinesSource(Game.Hero);
             Processor = new MultiProcessor(60, _cancellationTokenSource.Token);
             HeroSkillBinds = new HeroSkillBinds(Game.Hero);
+            ArenaFactory = new ArenaFactory(new BossSkillProcessFactory(Game, soundPlayer));
         }
 
         public void Dispose()

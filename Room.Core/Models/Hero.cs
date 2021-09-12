@@ -77,5 +77,14 @@ namespace Room.Core.Models
         public IChildItemsContainerExt ChildItemsContainer { get; } = new ChildItemsContainer();
         
         IChildItemsContainer IChildItemsOwner.ChildItemsContainer => ChildItemsContainer;
+
+        /// <summary>
+        /// Воскресить
+        /// </summary>
+        public void Ressurect()
+        {
+            HP.SetMax();
+            IsDead = false;
+        }
     }
 }

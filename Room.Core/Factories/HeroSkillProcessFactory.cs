@@ -32,7 +32,7 @@ namespace Room.Core.Factories
             }
 
             if (skill is TeleportSkill teleport)
-                return new TeleportProcess(initializer, teleport, _game.Arena);
+                return new TeleportProcess(initializer, teleport, _game);
 
             throw new NotImplementedException();
         }

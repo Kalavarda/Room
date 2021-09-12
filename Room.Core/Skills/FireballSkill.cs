@@ -73,6 +73,14 @@ namespace Room.Core.Skills
 
         public void Process(TimeSpan delta)
         {
+            if (_initializer is ICreature cr)
+                if (cr.IsDead)
+                {
+                    BeforeComplete();
+                    Completed?.Invoke(this);
+                    return;
+                }
+
             var distance = _startPos.DistanceTo(Fireball.Bounds);
             if (distance > _skill.MaxDistance)
             {
@@ -107,6 +115,7 @@ namespace Room.Core.Skills
         public void Stop()
         {
             BeforeComplete();
+            Completed?.Invoke(this);
         }
     }
 

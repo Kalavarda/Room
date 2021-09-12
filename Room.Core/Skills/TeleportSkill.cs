@@ -38,7 +38,7 @@ namespace Room.Core.Skills
     {
         private readonly ISkilled _initializer;
         private readonly TeleportSkill _skill;
-        private readonly Arena _arena;
+        private readonly Game _game;
         private readonly PointF _startPosition;
         private readonly float _shiftDirection;
         private readonly PointF _position;
@@ -46,11 +46,11 @@ namespace Room.Core.Skills
 
         public event Action<IProcess> Completed;
 
-        public TeleportProcess(ISkilled initializer, TeleportSkill skill, Arena arena)
+        public TeleportProcess(ISkilled initializer, TeleportSkill skill, Game game)
         {
             _initializer = initializer ?? throw new ArgumentNullException(nameof(initializer));
             _skill = skill ?? throw new ArgumentNullException(nameof(skill));
-            _arena = arena ?? throw new ArgumentNullException(nameof(arena));
+            _game = game ?? throw new ArgumentNullException(nameof(game));
 
             _position = ((IHasBounds)_initializer).Bounds.Position;
             _startPosition = _position.DeepClone();
@@ -72,7 +72,7 @@ namespace Room.Core.Skills
             var newX = _position.X + dx;
             var newY = _position.Y + dy;
 
-            if (!_arena.Bounds.DoesIntersect(newX, newY))
+            if (!_game.Arena.Bounds.DoesIntersect(newX, newY))
             {
                 BeforeComplete();
                 Completed?.Invoke(this);
@@ -97,6 +97,7 @@ namespace Room.Core.Skills
         public void Stop()
         {
             BeforeComplete();
+            Completed?.Invoke(this);
         }
     }
 }

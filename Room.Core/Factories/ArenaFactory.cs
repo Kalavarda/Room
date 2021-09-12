@@ -1,10 +1,11 @@
 ﻿using System;
 using Kalavarda.Primitives.Skills;
+using Room.Core.Abstract;
 using Room.Core.Models;
 
 namespace Room.Core.Factories
 {
-    public class ArenaFactory
+    public class ArenaFactory : IArenaFactory
     {
         private readonly ISkillProcessFactory _bossSkillProcessFactory;
 

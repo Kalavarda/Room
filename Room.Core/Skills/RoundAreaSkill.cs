@@ -59,6 +59,14 @@ namespace Room.Core.Skills
 
         public void Process(TimeSpan delta)
         {
+            if (_initializer is ICreature cr)
+                if (cr.IsDead)
+                {
+                    BeforeComplete();
+                    Completed?.Invoke(this);
+                    return;
+                }
+
             if (DateTime.Now - _startTime > _skill.WaitTime)
             {
                 _soundPlayer.Play(Blow);
@@ -77,6 +85,7 @@ namespace Room.Core.Skills
         public void Stop()
         {
             BeforeComplete();
+            Completed?.Invoke(this);
         }
 
         private void BeforeComplete()

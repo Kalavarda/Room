@@ -1,11 +1,12 @@
 ﻿using System;
-using Kalavarda.Primitives.Geometry;
+using System.Collections.Generic;
+using System.Linq;
 using Kalavarda.Primitives.Process;
 using Room.Core.Models;
 
 namespace Room.Processes
 {
-    public class HeroMoveProcess: IProcess
+    public class HeroMoveProcess: IProcess, IIncompatibleProcess
     {
         private readonly Hero _hero;
         private readonly Arena _arena;
@@ -32,6 +33,12 @@ namespace Room.Processes
 
         public void Stop()
         {
+            Completed?.Invoke(this);
+        }
+
+        public IReadOnlyCollection<IProcess> GetIncompatibleProcesses(IReadOnlyCollection<IProcess> processes)
+        {
+            return processes.OfType<HeroMoveProcess>().ToArray();
         }
     }
 }

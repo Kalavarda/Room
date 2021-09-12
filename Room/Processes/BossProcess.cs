@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Kalavarda.Primitives.Process;
 using Kalavarda.Primitives.Skills;
@@ -6,7 +7,7 @@ using Room.Core.Models;
 
 namespace Room.Processes
 {
-    public class BossProcess : IProcess
+    public class BossProcess : IProcess, IIncompatibleProcess
     {
         private readonly Boss _boss;
         private readonly Game _game;
@@ -25,13 +26,19 @@ namespace Room.Processes
 
         public void Process(TimeSpan delta)
         {
+            if (_game.Hero.IsDead)
+            {
+                Completed?.Invoke(this);
+                return;
+            }
+
             var distance = _boss.Position.DistanceTo(_game.Hero.Position);
 
-            // TODO: сделать нормально
-            if (distance > 5)
-                wait = false;
-            if (wait)
-                return;
+            //// TODO: сделать нормально
+            //if (distance > 5)
+            //    wait = false;
+            //if (wait)
+            //    return;
 
             var skill = _boss.GetReadySkills()
                 .Where(sk => sk.MaxDistance >= distance)
@@ -44,7 +51,12 @@ namespace Room.Processes
 
         public void Stop()
         {
-            throw new NotImplementedException();
+            Completed?.Invoke(this);
+        }
+
+        public IReadOnlyCollection<IProcess> GetIncompatibleProcesses(IReadOnlyCollection<IProcess> processes)
+        {
+            return processes.OfType<BossProcess>().ToArray();
         }
     }
 }

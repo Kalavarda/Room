@@ -21,12 +21,12 @@ namespace Room.Controls
             _scale.CenterX = Width / 2;
             _scale.CenterY = Height / 2;
 
-            _area.RemainChanged += _area_RemainChanged;
-            Unloaded += (sender, e) => _area.RemainChanged -= _area_RemainChanged;
-            _area_RemainChanged(_area);
+            _area.RemainChanged += Area_RemainChanged;
+            Unloaded += (sender, e) => _area.RemainChanged -= Area_RemainChanged;
+            Area_RemainChanged(_area);
         }
 
-        private void _area_RemainChanged(AreaBase area)
+        private void Area_RemainChanged(AreaBase area)
         {
             this.Do(() =>
             {

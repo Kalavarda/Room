@@ -1,4 +1,4 @@
-﻿using Room.Processes;
+﻿using Room.Controllers;
 using Room.Windows;
 
 namespace Room
@@ -19,10 +19,8 @@ namespace Room
 
         private void MainWindow_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            _appContext.Processor.Add(new HeroMoveProcess(_appContext.Game.Hero, _appContext.Game.Arena));
-            _appContext.Processor.Add(new BossProcess(_appContext.Game.Arena.Boss, _appContext.Game, _appContext.Processor));
-
             var gameWindow = new GameWindow(_appContext) { Owner = this };
+            new GameController(_appContext.Game, _appContext.AwardsSource, _appContext.FinesSource, gameWindow, _appContext.ArenaFactory, _appContext.Processor);
             gameWindow.ShowDialog();
         }
 

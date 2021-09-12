@@ -18,6 +18,8 @@ namespace Room.Controls
 
         private Game _game;
         private AppContext _appContext;
+        private readonly ChildItemsAggregator _aggregator = new ChildItemsAggregator();
+        private PositionController _bossPositionController;
 
         public Game Game
         {
@@ -39,8 +41,6 @@ namespace Room.Controls
 
                     _arenaControl = new ArenaControl { Arena = _game.Arena };
                     _canvas.Children.Add(_arenaControl);
-                    Canvas.SetLeft(_arenaControl, -_arenaControl.Width / 2);
-                    Canvas.SetTop(_arenaControl, -_arenaControl.Height / 2);
 
                     var w = _root.ActualWidth / _arenaControl.Width;
                     var h = _root.ActualHeight / _arenaControl.Height;
@@ -49,10 +49,6 @@ namespace Room.Controls
                     new ZoomController(_root, _canvas, _scaleTransform, _translateTransform);
 
                     new DragAndDropController(_root, _translateTransform).ToCenter();
-
-                    _bossControl = new BossControl { Boss = _game.Arena.Boss };
-                    _canvas.Children.Add(_bossControl);
-                    new PositionController(_bossControl, _game.Arena.Boss);
 
                     _heroControl = new HeroControl { Hero = _game.Hero };
                     _canvas.Children.Add(_heroControl);
@@ -77,11 +73,37 @@ namespace Room.Controls
                 {
                     Game = _appContext.Game;
 
-                    var aggregator = new ChildItemsAggregator();
-                    aggregator.Add(_appContext.Game.Hero);
-                    aggregator.Add(_appContext.Game.Arena.Boss);
-                    new ChildItemsController(aggregator, _appContext.ChildUiElementFactory, _canvas);
+                    _aggregator.Add(_appContext.Game.Hero);
+                    _appContext.Game.ArenaChanged += Game_ArenaChanged;
+                    Game_ArenaChanged(_appContext.Game, null, _appContext.Game.Arena);
+                    new ChildItemsController(_aggregator, _appContext.ChildUiElementFactory, _canvas);
                 }
+            }
+        }
+
+        private void Game_ArenaChanged(Game game, Arena oldArena, Arena newArena)
+        {
+            if (oldArena != null)
+            {
+                _aggregator.Remove(oldArena.Boss);
+                _canvas.Children.Remove(_bossControl);
+                _bossPositionController.Dispose();
+            }
+
+            if (newArena != null)
+            {
+                _aggregator.Add(newArena.Boss);
+
+                _bossControl = new BossControl { Boss = newArena.Boss };
+                _canvas.Children.Add(_bossControl);
+                _bossPositionController = new PositionController(_bossControl, newArena.Boss);
+            }
+
+            if (_arenaControl != null)
+            {
+                _arenaControl.Arena = newArena;
+                Canvas.SetLeft(_arenaControl, -_arenaControl.Width / 2);
+                Canvas.SetTop(_arenaControl, -_arenaControl.Height / 2);
             }
         }
 
