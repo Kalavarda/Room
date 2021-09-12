@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using Kalavarda.Primitives.WPF;
 using Room.Controllers;
+using Room.Core.Abstract;
 using Room.Core.Models;
 using Room.Processes;
 
@@ -40,10 +41,14 @@ namespace Room.Windows
             _appContext.Game.ArenaChanged += Game_ArenaChanged;
             Game_ArenaChanged(_appContext.Game, null, _appContext.Game.Arena);
 
-            new HeroMoveController(_appContext.Game.Hero, this, HeroMoveController.Mode.ByLook);
-            new SkillController(_appContext.Game.Hero, this, _appContext.Processor, _appContext.HeroSkillBinds);
+            var hero = _appContext.Game.Hero;
 
-            _heroHP.Range = _appContext.Game.Hero.HP;
+            new HeroMoveController(hero, this, HeroMoveController.Mode.ByLook);
+            new SkillController(hero, this, _appContext.Processor, _appContext.HeroSkillBinds);
+
+            _heroHP.Range = hero.HP;
+            _XP.Range = hero.XP;
+            _log.ItemsContainer = hero.ItemsContainer;
 
             TuneControls();
         }

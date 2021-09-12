@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Kalavarda.Primitives.Abstract;
 using Room.Core.Abstract;
 using Room.Core.Models;
 
@@ -6,15 +8,20 @@ namespace Room.Core.Impl
 {
     public class AwardSource: IAwardsSource
     {
-        private readonly Hero _hero;
+        private readonly ILevelMultiplier _multiplier;
 
-        public AwardSource(Hero hero)
+        public AwardSource(ILevelMultiplier multiplier)
         {
-            _hero = hero ?? throw new ArgumentNullException(nameof(hero));
+            _multiplier = multiplier ?? throw new ArgumentNullException(nameof(multiplier));
         }
 
-        public void Award()
+        public IReadOnlyDictionary<IGameItemType, float> GetAwards(IHasLevel killedBoss)
         {
+            var xp = _multiplier.GetValue(100, killedBoss.Level);
+            return new Dictionary<IGameItemType, float>
+            {
+                { GameItemTypeTypes.XP, xp }
+            };
         }
     }
 }

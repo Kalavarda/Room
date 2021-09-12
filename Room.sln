@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kalavarda.Primitives", "..\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kalavarda.Primitives.WPF", "..\Primitives\Kalavarda.Primitives.WPF\Kalavarda.Primitives.WPF.csproj", "{EDC907DC-1F1C-4FBC-8734-B018483228A3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5A74F5C6-13A8-45CE-911E-BA3A88E15076}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Room.Core.Tests", "Room.Core.Tests\Room.Core.Tests.csproj", "{C0488AE0-4343-4B8D-8833-4725FC4395D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +39,10 @@ Global
 		{EDC907DC-1F1C-4FBC-8734-B018483228A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDC907DC-1F1C-4FBC-8734-B018483228A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDC907DC-1F1C-4FBC-8734-B018483228A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0488AE0-4343-4B8D-8833-4725FC4395D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0488AE0-4343-4B8D-8833-4725FC4395D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0488AE0-4343-4B8D-8833-4725FC4395D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0488AE0-4343-4B8D-8833-4725FC4395D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -42,6 +50,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{4F93E90A-CB4F-43A2-B30E-01ED4E26C47D} = {9A10722E-1D84-42D4-BA0C-48A3CB80EE58}
 		{EDC907DC-1F1C-4FBC-8734-B018483228A3} = {9A10722E-1D84-42D4-BA0C-48A3CB80EE58}
+		{C0488AE0-4343-4B8D-8833-4725FC4395D7} = {5A74F5C6-13A8-45CE-911E-BA3A88E15076}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D55E9F37-6AC6-468B-8DE5-B519B733C848}

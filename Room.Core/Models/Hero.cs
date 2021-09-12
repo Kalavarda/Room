@@ -9,11 +9,11 @@ using Room.Core.Skills;
 
 namespace Room.Core.Models
 {
-    public class Hero: IHasPosition, IHasBounds, IPhysicalObject, ICreatureExt, ISkilled, IChildItemsOwner, IChildItemsOwnerExt, ILooking, IHasModifiers
+    public class Hero: IHasPosition, IHasBounds, IPhysicalObject, ICreatureExt, ISkilled, IChildItemsOwner, IChildItemsOwnerExt, ILooking, IHasModifiers, IHasLevel
     {
-        public const string SkillKey_1 = "Fireball_Simple";
-        public const string SkillKey_2 = "Teleport_Forward";
-        public const string SkillKey_3 = "Teleport_Backward";
+        public const string SkillKey_Fireball = "Fireball_Simple";
+        public const string SkillKey_Teleport_Forward = "Teleport_Forward";
+        public const string SkillKey_Teleport_Backward = "Teleport_Backward";
 
         private readonly ISkill[] _skills;
 
@@ -35,6 +35,10 @@ namespace Room.Core.Models
         
         public RangeF HP { get; } = new RangeF { Max = 100 };
 
+        public RangeF XP { get; } = new RangeF();
+
+        public ushort Level { get; set; }
+
         public bool IsAlive => !IsDead;
         
         public bool IsDead { get; private set; }
@@ -55,6 +59,8 @@ namespace Room.Core.Models
 
         public event Action<HpChange> HpChanged;
 
+        public IGameItemsContainerExt ItemsContainer { get; } = new GameItemsContainer();
+
         public Hero(ISkillProcessFactory skillProcessFactory)
         {
             HP.SetMax();
@@ -66,9 +72,9 @@ namespace Room.Core.Models
 
             _skills = new ISkill[]
             {
-                new FireballSkill(TimeSpan.FromSeconds(2), 3, 5, -10, skillProcessFactory) { Key = SkillKey_1 },
-                new TeleportSkill(4, TimeSpan.FromSeconds(20), TimeSpan.FromSeconds(0.2), false, false, skillProcessFactory) { Key = SkillKey_2 },
-                new TeleportSkill(1, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(0.2), true, true, skillProcessFactory) { Key = SkillKey_3 },
+                new FireballSkill(TimeSpan.FromSeconds(2), 3, 4, -10, skillProcessFactory) { Key = SkillKey_Fireball },
+                new TeleportSkill(4, TimeSpan.FromSeconds(20), TimeSpan.FromSeconds(0.2), false, false, skillProcessFactory) { Key = SkillKey_Teleport_Forward },
+                new TeleportSkill(1, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(0.2), true, true, skillProcessFactory) { Key = SkillKey_Teleport_Backward },
             };
         }
 

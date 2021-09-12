@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Kalavarda.Primitives.Abstract;
 using Kalavarda.Primitives.Process;
 using Kalavarda.Primitives.WPF.Abstract;
 using Kalavarda.Primitives.WPF.Skills;
@@ -23,6 +24,8 @@ namespace Room
 
         public IChildUiElementFactory ChildUiElementFactory { get; } = new UiElementFactory();
 
+        public ILevelMultiplier LevelMultiplier { get; } = new LevelMultiplier();
+
         public IAwardsSource AwardsSource { get; }
 
         public IFinesSource FinesSource { get; }
@@ -33,11 +36,11 @@ namespace Room
         {
             var soundPlayer = new SoundPlayer();
             Game = new Game(soundPlayer);
-            AwardsSource = new AwardSource(Game.Hero);
+            AwardsSource = new AwardSource(LevelMultiplier);
             FinesSource = new FinesSource(Game.Hero);
             Processor = new MultiProcessor(60, _cancellationTokenSource.Token);
             HeroSkillBinds = new HeroSkillBinds(Game.Hero);
-            ArenaFactory = new ArenaFactory(new BossSkillProcessFactory(Game, soundPlayer));
+            ArenaFactory = new ArenaFactory(new BossSkillProcessFactory(Game, soundPlayer), LevelMultiplier);
         }
 
         public void Dispose()

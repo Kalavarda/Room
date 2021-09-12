@@ -20,7 +20,7 @@ namespace Room
         private void MainWindow_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             var gameWindow = new GameWindow(_appContext) { Owner = this };
-            new GameController(_appContext.Game, _appContext.AwardsSource, _appContext.FinesSource, gameWindow, _appContext.ArenaFactory, _appContext.Processor);
+            new GameController(_appContext.Game, _appContext.AwardsSource, _appContext.FinesSource, gameWindow, _appContext.ArenaFactory, _appContext.Processor, _appContext.LevelMultiplier);
             gameWindow.ShowDialog();
         }
 

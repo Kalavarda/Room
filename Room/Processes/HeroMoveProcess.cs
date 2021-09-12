@@ -20,6 +20,9 @@ namespace Room.Processes
 
         public void Process(TimeSpan delta)
         {
+            if (_arena.Boss.IsDead)
+                return;
+
             var speed = _hero.MoveSpeed.Value;
             var dt = (float)delta.TotalSeconds;
             var x = _hero.Position.X + dt * speed * MathF.Cos(_hero.MoveDirection.Value);

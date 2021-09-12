@@ -4,6 +4,6 @@ namespace Room.Core.Abstract
 {
     public interface IArenaFactory
     {
-        Arena Create(int level);
+        Arena Create(ushort level);
     }
 }

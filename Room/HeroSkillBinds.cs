@@ -19,23 +19,23 @@ namespace Room
 
         public IReadOnlyCollection<SkillBind> SkillBinds { get; } = new []
         {
-            new SkillBind(Hero.SkillKey_1, Key.D1),
-            new SkillBind(Hero.SkillKey_2, Key.D5),
-            new SkillBind(Hero.SkillKey_2, null, MouseButton.Middle),
-            new SkillBind(Hero.SkillKey_3, Key.C)
+            new SkillBind(Hero.SkillKey_Fireball, Key.D1),
+            new SkillBind(Hero.SkillKey_Teleport_Forward, Key.D5),
+            new SkillBind(Hero.SkillKey_Teleport_Forward, null, MouseButton.Middle),
+            new SkillBind(Hero.SkillKey_Teleport_Backward, Key.C)
         };
 
         public ISkill GetSkill(string key)
         {
             switch (key)
             {
-                case Hero.SkillKey_1:
+                case Hero.SkillKey_Fireball:
                     return _hero.Skills.First();
 
-                case Hero.SkillKey_2:
+                case Hero.SkillKey_Teleport_Forward:
                     return _hero.Skills.Skip(1).First();
 
-                case Hero.SkillKey_3:
+                case Hero.SkillKey_Teleport_Backward:
                     return _hero.Skills.Skip(2).First();
 
                 default:

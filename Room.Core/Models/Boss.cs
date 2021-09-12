@@ -15,7 +15,7 @@ namespace Room.Core.Models
 
         public override IReadOnlyCollection<ISkill> Skills => _skills;
 
-        public Boss(ISkillProcessFactory skillProcessFactory): base(100)
+        public Boss(ushort level, ISkillProcessFactory skillProcessFactory): base(level)
         {
             _skills = new ISkill[]
             {

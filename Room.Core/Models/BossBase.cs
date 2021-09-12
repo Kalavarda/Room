@@ -8,7 +8,7 @@ using Room.Core.Abstract;
 
 namespace Room.Core.Models
 {
-    public abstract class BossBase : IHasBounds, IHasPosition, ISkilled, IChildItemsOwner, IChildItemsOwnerExt, ICreatureExt, IPhysicalObject, IHasModifiers
+    public abstract class BossBase : IHasBounds, IHasPosition, ISkilled, IChildItemsOwner, IChildItemsOwnerExt, ICreatureExt, IPhysicalObject, IHasModifiers, IHasLevel
     {
         public BoundsF Bounds { get; } = new RoundBounds(new PointF(), 1.5f);
         
@@ -20,7 +20,7 @@ namespace Room.Core.Models
         
         public abstract IReadOnlyCollection<ISkill> Skills { get; }
         
-        public RangeF HP { get; } = new RangeF();
+        public RangeF HP { get; } = new RangeF { Max = 100 };
         
         public bool IsAlive => !IsDead;
         
@@ -36,9 +36,9 @@ namespace Room.Core.Models
 
         public event Action<HpChange> HpChanged;
 
-        protected BossBase(float maxHP)
+        protected BossBase(ushort level)
         {
-            HP.Max = maxHP;
+            Level = level;
             HP.SetMax();
             HP.ValueMin += HP_ValueMin;
         }
@@ -55,5 +55,7 @@ namespace Room.Core.Models
             IsDead = true;
             Died?.Invoke(this);
         }
+
+        public ushort Level { get; }
     }
 }

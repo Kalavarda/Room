@@ -1,10 +1,12 @@
-﻿namespace Room.Core.Abstract
+﻿using System.Collections.Generic;
+
+namespace Room.Core.Abstract
 {
     public interface IAwardsSource
     {
         /// <summary>
-        /// Наградить
+        /// Создаёт награды
         /// </summary>
-        void Award();
+        IReadOnlyDictionary<IGameItemType, float> GetAwards(IHasLevel killedBoss);
     }
 }
