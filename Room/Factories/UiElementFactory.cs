@@ -13,6 +13,9 @@ namespace Room.Factories
             if (childItem is Fireball fireball)
                 return new FireballControl(fireball);
 
+            if (childItem is RoundArea area)
+                return new AreaControl(area);
+
             throw new System.NotImplementedException();
         }
     }

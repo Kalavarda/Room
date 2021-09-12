@@ -39,52 +39,9 @@ namespace Room.Core.Skills
                     if (creature.IsDead)
                         return;
 
-                fireballProcess = SkillProcessFactory.Create(this);
+                fireballProcess = SkillProcessFactory.Create(initializer, this);
             });
             return fireballProcess;
-        }
-    }
-
-    public interface ISkillProcessFactory
-    {
-        IProcess Create(ISkill skill);
-    }
-
-    public class BossFireballProcessFactory : ISkillProcessFactory
-    {
-        private readonly IHasBounds _initializer;
-        private readonly Game _game;
-
-        public BossFireballProcessFactory(IHasBounds initializer, Game game)
-        {
-            _initializer = initializer ?? throw new ArgumentNullException(nameof(initializer));
-            _game = game ?? throw new ArgumentNullException(nameof(game));
-        }
-
-        public IProcess Create(ISkill skill)
-        {
-            return new FireballProcess(_initializer, skill, _game.Hero, _game);
-        }
-    }
-
-    public class HeroFireballProcessFactory : ISkillProcessFactory
-    {
-        private readonly IHasBounds _initializer;
-        private readonly Game _game;
-
-        public HeroFireballProcessFactory(IHasBounds initializer, Game game)
-        {
-            _initializer = initializer ?? throw new ArgumentNullException(nameof(initializer));
-            _game = game ?? throw new ArgumentNullException(nameof(game));
-        }
-
-        public IProcess Create(ISkill skill)
-        {
-            var dx = skill.MaxDistance * MathF.Cos(_game.Hero.LookDirection.Value);
-            var dy = skill.MaxDistance * MathF.Sin(_game.Hero.LookDirection.Value);
-            var target = new RoundBounds(new PointF(_game.Hero.Position.X + dx, _game.Hero.Position.Y + dy), 0);
-
-            return new FireballProcess(_initializer, skill, target, _game);
         }
     }
 

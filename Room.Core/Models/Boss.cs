@@ -24,10 +24,11 @@ namespace Room.Core.Models
         
         public IReadOnlyCollection<ISkill> Skills => _skills;
 
-        public Boss(Game game)
+        public Boss(ISkillProcessFactory skillProcessFactory)
         {
-            var fireball = new FireballSkill(TimeSpan.FromSeconds(1), 4, 15, new BossFireballProcessFactory(this, game));
-            _skills = new [] { fireball };
+            var fireball = new FireballSkill(TimeSpan.FromSeconds(1), 4, 15, skillProcessFactory);
+            var roundArea = new RoundAreaSkill(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(2), skillProcessFactory);
+            _skills = new ISkill[] { fireball, roundArea };
 
             HP.SetMax();
             HP.ValueMin += HP_ValueMin;

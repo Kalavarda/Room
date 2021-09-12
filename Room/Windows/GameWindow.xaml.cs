@@ -19,7 +19,7 @@ namespace Room.Windows
             _appContext = appContext ?? throw new ArgumentNullException(nameof(appContext));
 
             _heroHP.Range = appContext.Game.Hero.HP;
-            _bossHP.Range = appContext.Game.Boss.HP;
+            _bossHP.Range = appContext.Game.Arena.Boss.HP;
 
             Loaded += GameWindow_Loaded;
         }

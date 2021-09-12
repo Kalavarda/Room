@@ -50,9 +50,9 @@ namespace Room.Controls
 
                     new DragAndDropController(_root, _translateTransform).ToCenter();
 
-                    _bossControl = new BossControl { Boss = _game.Boss };
+                    _bossControl = new BossControl { Boss = _game.Arena.Boss };
                     _canvas.Children.Add(_bossControl);
-                    new PositionController(_bossControl, _game.Boss);
+                    new PositionController(_bossControl, _game.Arena.Boss);
 
                     _heroControl = new HeroControl { Hero = _game.Hero };
                     _canvas.Children.Add(_heroControl);
@@ -79,7 +79,7 @@ namespace Room.Controls
 
                     var aggregator = new ChildItemsAggregator();
                     aggregator.Add(_appContext.Game.Hero);
-                    aggregator.Add(_appContext.Game.Boss);
+                    aggregator.Add(_appContext.Game.Arena.Boss);
                     new ChildItemsController(aggregator, _appContext.ChildUiElementFactory, _canvas);
                 }
             }

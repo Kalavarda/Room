@@ -4,6 +4,13 @@ namespace Room.Core.Models
 {
     public class Arena
     {
-        public SizeF Size { get; } = new SizeF { Width = 20, Height = 20 };
+        public Arena(Boss boss)
+        {
+            Boss = boss;
+        }
+
+        public SizeF Size { get; } = new SizeF();
+
+        public Boss Boss { get; }
     }
 }

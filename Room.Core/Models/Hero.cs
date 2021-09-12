@@ -45,7 +45,7 @@ namespace Room.Core.Models
 
         public event Action<HpChange> HpChanged;
 
-        public Hero(Game game)
+        public Hero(ISkillProcessFactory skillProcessFactory)
         {
             HP.SetMax();
             HP.ValueMin += hp =>
@@ -56,7 +56,7 @@ namespace Room.Core.Models
 
             _skills = new []
             {
-                new FireballSkill(TimeSpan.FromSeconds(2), 3, 10, new HeroFireballProcessFactory(this, game))
+                new FireballSkill(TimeSpan.FromSeconds(2), 3, 10, skillProcessFactory)
             };
         }
 
