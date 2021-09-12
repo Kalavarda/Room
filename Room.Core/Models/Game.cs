@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Kalavarda.Primitives.Abstract;
+using Room.Core.Abstract;
 using Room.Core.Factories;
 
 namespace Room.Core.Models
@@ -8,11 +9,11 @@ namespace Room.Core.Models
     {
         private readonly ArenaFactory _arenaFactory;
 
-        public Game()
+        public Game(ISoundPlayer soundPlayer)
         {
-            _arenaFactory = new ArenaFactory(new BossSkillProcessFactory(this));
+            _arenaFactory = new ArenaFactory(new BossSkillProcessFactory(this, soundPlayer));
 
-            Hero = new Hero(new HeroSkillProcessFactory(this));
+            Hero = new Hero(new HeroSkillProcessFactory(this, soundPlayer));
             Arena = _arenaFactory.Create(1);
         }
 

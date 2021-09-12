@@ -27,9 +27,9 @@ namespace Room.Core.Models
         {
             _skills = new ISkill[]
             {
-                new FireballSkill(TimeSpan.FromSeconds(1), 4, 15, skillProcessFactory),
-                new RoundAreaSkill(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(2), skillProcessFactory),
-                new RoundAreaSkill(15, TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(1), skillProcessFactory)
+                new FireballSkill(TimeSpan.FromSeconds(1), 4, 15, -20, skillProcessFactory),
+                new RoundAreaSkill(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(2), -10, skillProcessFactory),
+                new RoundAreaSkill(15, TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(1), -50, skillProcessFactory)
             };
 
             HP.SetMax();

@@ -3,41 +3,51 @@ using Kalavarda.Primitives.Abstract;
 using Kalavarda.Primitives.Geometry;
 using Kalavarda.Primitives.Process;
 using Kalavarda.Primitives.Skills;
+using Room.Core.Abstract;
 using Room.Core.Models;
 
 namespace Room.Core.Skills
 {
-    public class FireballSkill: SkillBase
+    public class FireballSkill: SkillBase, IHasKey
     {
         public override string Name => "Сгусток огня";
 
         public float Speed { get; }
 
-        public FireballSkill(TimeSpan interval, float speed, float maxDistance, ISkillProcessFactory processFactory)
+        public float HpChange { get; }
+
+        public FireballSkill(TimeSpan interval, float speed, float maxDistance, float hpChange, ISkillProcessFactory processFactory)
             :base(maxDistance, interval, processFactory)
         {
             Speed = speed;
+            HpChange = hpChange;
         }
+
+        public string Key { get; set; }
     }
 
     public class FireballProcess : IProcess
     {
+        public const string FireballCreated = "Fireball_Created";
+
         private readonly IHasBounds _initializer;
-        private readonly ISkill _skill;
+        private readonly FireballSkill _skill;
         private readonly IHasPosition _target;
         private readonly Game _game;
+        private readonly ISoundPlayer _soundPlayer;
         private readonly PointF _startPos;
 
         public event Action<IProcess> Completed;
 
         public Fireball Fireball { get; }
 
-        public FireballProcess(IHasBounds initializer, ISkill skill, IHasPosition target, Game game)
+        public FireballProcess(IHasBounds initializer, FireballSkill skill, IHasPosition target, Game game, ISoundPlayer soundPlayer)
         {
             _initializer = initializer ?? throw new ArgumentNullException(nameof(initializer));
             _skill = skill ?? throw new ArgumentNullException(nameof(skill));
             _target = target ?? throw new ArgumentNullException(nameof(target));
             _game = game ?? throw new ArgumentNullException(nameof(game));
+            _soundPlayer = soundPlayer ?? throw new ArgumentNullException(nameof(soundPlayer));
 
             Fireball = CreateFireball();
             var itemsOwner = ((IChildItemsOwnerExt)_initializer).ChildItemsContainer;
@@ -53,8 +63,11 @@ namespace Room.Core.Skills
             var angle = new AngleF { Value = MathF.Atan2(dy, dx) };
 
             var container = ((IChildItemsOwnerExt)_initializer).ChildItemsContainer;
-            var fireball = new Fireball(container, ((FireballSkill)_skill).Speed, angle);
+            var fireball = new Fireball(container, _skill.Speed, angle);
             fireball.Bounds.Position.Set(_initializer.Bounds.Position);
+
+            _soundPlayer.Play(FireballCreated);
+
             return fireball;
         }
 
@@ -78,7 +91,7 @@ namespace Room.Core.Skills
                     if (obj.Bounds.DoesIntersect(Fireball.Bounds))
                     {
                         if (obj is ICreatureExt creatureExt)
-                            creatureExt.ChangeHP(-10, (ISkilled)_initializer, _skill);
+                            creatureExt.ChangeHP(_skill.HpChange, (ISkilled)_initializer, _skill);
                         BeforeComplete();
                         Completed?.Invoke(this);
                         return;

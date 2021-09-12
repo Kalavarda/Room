@@ -4,22 +4,36 @@ using System.Windows;
 using System.Windows.Input;
 using Kalavarda.Primitives.Process;
 using Kalavarda.Primitives.Skills;
+using Kalavarda.Primitives.WPF.Skills;
 
 namespace Room.Controllers
 {
     public class SkillController: IDisposable
     {
         private readonly ISkilled _hero;
-        private readonly IInputElement _uiElement;
+        private readonly UIElement _uiElement;
         private readonly IProcessor _processor;
+        private readonly ISkillBinds _skillBinds;
 
-        public SkillController(ISkilled hero, IInputElement uiElement, IProcessor processor)
+        public SkillController(ISkilled hero, UIElement uiElement, IProcessor processor, ISkillBinds skillBinds)
         {
             _hero = hero ?? throw new ArgumentNullException(nameof(hero));
             _uiElement = uiElement ?? throw new ArgumentNullException(nameof(uiElement));
             _processor = processor ?? throw new ArgumentNullException(nameof(processor));
+            _skillBinds = skillBinds ?? throw new ArgumentNullException(nameof(skillBinds));
 
             _uiElement.KeyDown += UiElement_KeyDown;
+            _uiElement.MouseDown += UiElement_MouseDown;
+        }
+
+        private void UiElement_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.Handled)
+                return;
+
+            var bind = _skillBinds.SkillBinds.FirstOrDefault(sb => sb.MouseButton == e.ChangedButton);
+            if (bind != null)
+                UseBind(e, bind);
         }
 
         private void UiElement_KeyDown(object sender, KeyEventArgs e)
@@ -27,35 +41,26 @@ namespace Room.Controllers
             if (e.Handled)
                 return;
 
-            switch (e.Key)
-            {
-                case Key.D1:
-                    Use(0);
-                    e.Handled = true;
-                    break;
-
-                case Key.D2:
-                    Use(1);
-                    e.Handled = true;
-                    break;
-
-                case Key.D3:
-                    Use(2);
-                    e.Handled = true;
-                    break;
-            }
+            var bind = _skillBinds.SkillBinds.FirstOrDefault(sb => sb.Key == e.Key);
+            if (bind != null)
+                UseBind(e, bind);
         }
 
-        private void Use(int skip)
+        private void UseBind(RoutedEventArgs e, SkillBind bind)
         {
-            var skill = _hero.Skills.Skip(skip).FirstOrDefault();
-            var process = skill?.Use(_hero);
-            if (process != null)
-                _processor.Add(process);
+            var skill = _skillBinds.GetSkill(bind.SkillKey);
+            if (skill != null)
+            {
+                e.Handled = true;
+                var process = skill.Use(_hero);
+                if (process != null)
+                    _processor.Add(process);
+            }
         }
 
         public void Dispose()
         {
+            _uiElement.MouseDown -= UiElement_MouseDown;
             _uiElement.KeyDown -= UiElement_KeyDown;
         }
     }

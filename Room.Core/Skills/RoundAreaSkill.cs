@@ -3,6 +3,7 @@ using Kalavarda.Primitives.Abstract;
 using Kalavarda.Primitives.Geometry;
 using Kalavarda.Primitives.Process;
 using Kalavarda.Primitives.Skills;
+using Room.Core.Abstract;
 using Room.Core.Models;
 
 namespace Room.Core.Skills
@@ -16,28 +17,35 @@ namespace Room.Core.Skills
         /// </summary>
         public TimeSpan WaitTime { get; }
 
-        public RoundAreaSkill(float maxDistance, TimeSpan interval, TimeSpan waitTime, ISkillProcessFactory processFactory)
+        public float HpChange { get; }
+
+        public RoundAreaSkill(float maxDistance, TimeSpan interval, TimeSpan waitTime, float hpChange, ISkillProcessFactory processFactory)
             :base(maxDistance, interval, processFactory)
         {
             WaitTime = waitTime;
+            HpChange = hpChange;
         }
     }
 
     public class RoundAreaProcess: IProcess
     {
+        public const string Blow = "Area_Blow";
+
         private readonly ISkilled _initializer;
         private readonly RoundAreaSkill _skill;
         private readonly Game _game;
+        private readonly ISoundPlayer _soundPlayer;
         private readonly AreaBase _area;
         private readonly DateTime _startTime = DateTime.Now;
 
         public event Action<IProcess> Completed;
 
-        public RoundAreaProcess(ISkilled initializer, RoundAreaSkill skill, Game game)
+        public RoundAreaProcess(ISkilled initializer, RoundAreaSkill skill, Game game, ISoundPlayer soundPlayer)
         {
             _initializer = initializer ?? throw new ArgumentNullException(nameof(initializer));
             _skill = skill ?? throw new ArgumentNullException(nameof(skill));
             _game = game ?? throw new ArgumentNullException(nameof(game));
+            _soundPlayer = soundPlayer ?? throw new ArgumentNullException(nameof(soundPlayer));
 
             var childItemsOwner = (IChildItemsOwnerExt)initializer;
             var center = ((IHasBounds)_initializer).Bounds.Position;
@@ -53,11 +61,12 @@ namespace Room.Core.Skills
         {
             if (DateTime.Now - _startTime > _skill.WaitTime)
             {
+                _soundPlayer.Play(Blow);
                 foreach (var b in _game.GetAllBounds())
                     if (_area.Bounds.DoesIntersect(b.Bounds))
                         if (b is ICreatureExt creature)
                             if (creature != _initializer)
-                                creature.ChangeHP(-20, _initializer, _skill);
+                                creature.ChangeHP(_skill.HpChange, _initializer, _skill);
                 BeforeComplete();
                 Completed?.Invoke(this);
             }

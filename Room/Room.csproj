@@ -7,6 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Blow_01.mp3" />
+    <None Remove="Resources\Fireball_01.mp3" />
+    <None Remove="Resources\Fireball_Simple.mp3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\Blow_01.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Fireball_01.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Primitives\Kalavarda.Primitives.WPF\Kalavarda.Primitives.WPF.csproj" />
     <ProjectReference Include="..\Room.Core\Room.Core.csproj" />
   </ItemGroup>

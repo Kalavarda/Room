@@ -28,7 +28,7 @@ namespace Room.Windows
         {
             _gameControl.AppContext = _appContext;
             new HeroMoveController(_appContext.Game.Hero, this, HeroMoveController.Mode.ByLook);
-            new SkillController(_appContext.Game.Hero, this, _appContext.Processor);
+            new SkillController(_appContext.Game.Hero, this, _appContext.Processor, _appContext.HeroSkillBinds);
 
             TuneControls();
         }

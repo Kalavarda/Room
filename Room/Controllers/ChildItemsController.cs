@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using Kalavarda.Primitives.Abstract;
@@ -32,8 +31,6 @@ namespace Room.Controllers
         {
             _panel.Do(() =>
             {
-                Debug.WriteLine(childItem.GetHashCode());
-
                 var uiElement = _uiElementFactory.Create(childItem);
                 _uiElements.Add(childItem, uiElement);
                 _panel.Children.Add(uiElement);
@@ -51,8 +48,6 @@ namespace Room.Controllers
         {
             _panel.Do(() =>
             {
-                Debug.WriteLine(childItem.GetHashCode());
-
                 var uiElement = _uiElements[childItem];
                 _uiElements.Remove(childItem);
                 _panel.Children.Remove(uiElement);

@@ -1,16 +1,17 @@
-﻿using Room.Core.Models;
-using Room.Processes;
+﻿using Room.Processes;
 using Room.Windows;
 
 namespace Room
 {
     public partial class MainWindow
     {
-        private readonly AppContext _appContext = new AppContext();
+        private readonly AppContext _appContext;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            _appContext = new AppContext();
 
             Loaded += MainWindow_Loaded;
             Unloaded += MainWindow_Unloaded;

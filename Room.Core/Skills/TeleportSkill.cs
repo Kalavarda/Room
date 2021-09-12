@@ -8,7 +8,7 @@ using Room.Core.Models;
 
 namespace Room.Core.Skills
 {
-    public class TeleportSkill: SkillBase
+    public class TeleportSkill: SkillBase, IHasKey
     {
         public override string Name => Backward ? "Отскок назад" : "Телепорт вперёд";
 
@@ -30,6 +30,8 @@ namespace Room.Core.Skills
             Backward = backward;
             InvFrame = iFrame;
         }
+
+        public string Key { get; set; }
     }
 
     public class TeleportProcess: IProcess
