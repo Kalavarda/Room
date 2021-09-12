@@ -9,7 +9,7 @@ using Room.Core.Skills;
 
 namespace Room.Core.Models
 {
-    public class Hero: IHasPosition, IHasBounds, IPhysicalObject, ICreatureExt, ISkilled, IChildItemsOwner, IChildItemsOwnerExt, ILooking
+    public class Hero: IHasPosition, IHasBounds, IPhysicalObject, ICreatureExt, ISkilled, IChildItemsOwner, IChildItemsOwnerExt, ILooking, IHasModifiers
     {
         private readonly ISkill[] _skills;
 
@@ -36,12 +36,17 @@ namespace Room.Core.Models
         public bool IsDead { get; private set; }
 
         public event Action<ICreature> Died;
-        
+
+        public Modifiers Modifiers { get; } = new Modifiers();
+
         public void ChangeHP(float value, ISkilled initializer, ISkill skill)
         {
-            var oldValue = HP.Value;
-            HP.Value += value;
-            HpChanged?.Invoke(new HpChange(this, HP.Value - oldValue, initializer, skill));
+            if (!Modifiers.InvFrame) // TODO: unit-test
+            {
+                var oldValue = HP.Value;
+                HP.Value += value;
+                HpChanged?.Invoke(new HpChange(this, HP.Value - oldValue, initializer, skill));
+            }
         }
 
         public event Action<HpChange> HpChanged;
@@ -57,8 +62,9 @@ namespace Room.Core.Models
 
             _skills = new ISkill[]
             {
-                new FireballSkill(TimeSpan.FromSeconds(2), 3, 10, skillProcessFactory),
-                new TeleportSkill(4, TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(0.2), skillProcessFactory)
+                new FireballSkill(TimeSpan.FromSeconds(2), 3, 5, skillProcessFactory),
+                new TeleportSkill(4, TimeSpan.FromSeconds(20), TimeSpan.FromSeconds(0.2), false, false, skillProcessFactory),
+                new TeleportSkill(1, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(0.2), true, true, skillProcessFactory),
             };
         }
 

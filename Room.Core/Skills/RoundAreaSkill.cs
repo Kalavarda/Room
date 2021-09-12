@@ -1,5 +1,4 @@
 ﻿using System;
-using Kalavarda.Primitives;
 using Kalavarda.Primitives.Abstract;
 using Kalavarda.Primitives.Geometry;
 using Kalavarda.Primitives.Process;
@@ -8,42 +7,19 @@ using Room.Core.Models;
 
 namespace Room.Core.Skills
 {
-    public class RoundAreaSkill: ISkill
+    public class RoundAreaSkill: SkillBase
     {
-        private readonly ISkillProcessFactory _processFactory;
-        private readonly TimeLimiter _timeLimiter;
+        public override string Name => "Круг";
 
-        public string Name => "Круг";
-
-        public float MaxDistance { get; }
-        
         /// <summary>
         /// Через сколько бахнет
         /// </summary>
         public TimeSpan WaitTime { get; }
 
-        public ITimeLimiter TimeLimiter => _timeLimiter;
-
         public RoundAreaSkill(float maxDistance, TimeSpan interval, TimeSpan waitTime, ISkillProcessFactory processFactory)
+            :base(maxDistance, interval, processFactory)
         {
-            _processFactory = processFactory ?? throw new ArgumentNullException(nameof(processFactory));
-            MaxDistance = maxDistance;
             WaitTime = waitTime;
-            _timeLimiter = new TimeLimiter(interval);
-        }
-
-        public IProcess Use(ISkilled initializer)
-        {
-            IProcess skillProcess = null;
-            _timeLimiter.Do(() =>
-            {
-                if (initializer is ICreature creature)
-                    if (creature.IsDead)
-                        return;
-
-                skillProcess = _processFactory.Create(initializer, this);
-            });
-            return skillProcess;
         }
     }
 
@@ -52,7 +28,7 @@ namespace Room.Core.Skills
         private readonly ISkilled _initializer;
         private readonly RoundAreaSkill _skill;
         private readonly Game _game;
-        private readonly RoundArea _area;
+        private readonly AreaBase _area;
         private readonly DateTime _startTime = DateTime.Now;
 
         public event Action<IProcess> Completed;
@@ -65,7 +41,11 @@ namespace Room.Core.Skills
 
             var childItemsOwner = (IChildItemsOwnerExt)initializer;
             var center = ((IHasBounds)_initializer).Bounds.Position;
-            _area = new RoundArea(new RoundBounds(center, skill.MaxDistance), childItemsOwner.ChildItemsContainer);
+            _area = new RoundArea(new RoundBounds(center, skill.MaxDistance), childItemsOwner.ChildItemsContainer)
+            {
+                FullRemain = _skill.WaitTime,
+                Remain = _skill.WaitTime
+            };
             childItemsOwner.ChildItemsContainer.Add(_area);
         }
 
@@ -81,6 +61,8 @@ namespace Room.Core.Skills
                 BeforeComplete();
                 Completed?.Invoke(this);
             }
+
+            _area.Remain = _startTime + _skill.WaitTime - DateTime.Now;
         }
 
         public void Stop()
@@ -95,16 +77,43 @@ namespace Room.Core.Skills
         }
     }
 
-    public class RoundArea: IChildItem, IHasBounds
+    public abstract class AreaBase : IChildItem, IHasBounds
     {
+        private TimeSpan _remain;
+
         public BoundsF Bounds { get; }
 
         public IChildItemsContainer Container { get; }
 
-        public RoundArea(RoundBounds bounds, IChildItemsContainer container)
+        public TimeSpan Remain
+        {
+            get => _remain;
+            set
+            {
+                if (_remain == value)
+                    return;
+
+                _remain = value;
+
+                RemainChanged?.Invoke(this);
+            }
+        }
+
+        public TimeSpan FullRemain { get; set; }
+
+        public event Action<AreaBase> RemainChanged;
+
+        protected AreaBase(RoundBounds bounds, IChildItemsContainer container)
         {
             Bounds = bounds ?? throw new ArgumentNullException(nameof(bounds));
             Container = container ?? throw new ArgumentNullException(nameof(container));
+        }
+    }
+
+    public class RoundArea: AreaBase
+    {
+        public RoundArea(RoundBounds bounds, IChildItemsContainer container): base(bounds, container)
+        {
         }
     }
 }

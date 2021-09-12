@@ -26,7 +26,7 @@ namespace Room.Controllers
             var dx = (float)mousePos.X - _hero.Position.X;
             var dy = (float)mousePos.Y - _hero.Position.Y;
             _hero.LookDirection.Value = MathF.Atan2(dy, dx);
-
+            
             e.Handled = true;
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Kalavarda.Primitives.Geometry;
 using Room.Core.Models;
 
@@ -14,6 +15,7 @@ namespace Room.Controllers
         private bool _downPressed;
         private bool _leftPressed;
         private bool _rightPressed;
+        private readonly DispatcherTimer _timer = new DispatcherTimer();
 
         public HeroMoveController(Hero hero, IInputElement uiElement, Mode mode)
         {
@@ -22,6 +24,9 @@ namespace Room.Controllers
 
             uiElement.KeyDown += UiElement_KeyDown;
             uiElement.KeyUp += UiElement_KeyUp;
+
+            _timer.Tick += (sender, e) => ProcessKeys();
+            _timer.Start();
         }
 
         private void UiElement_KeyDown(object sender, KeyEventArgs e)
@@ -34,25 +39,21 @@ namespace Room.Controllers
                 case Key.W:
                     _upPressed = true;
                     _downPressed = false;
-                    ProcessKeys();
                     e.Handled = true;
                     break;
                 case Key.S:
                     _downPressed = true;
                     _upPressed = false;
-                    ProcessKeys();
                     e.Handled = true;
                     break;
                 case Key.A:
                     _leftPressed = true;
                     _rightPressed = false;
-                    ProcessKeys();
                     e.Handled = true;
                     break;
                 case Key.D:
                     _rightPressed = true;
                     _leftPressed = false;
-                    ProcessKeys();
                     e.Handled = true;
                     break;
             }

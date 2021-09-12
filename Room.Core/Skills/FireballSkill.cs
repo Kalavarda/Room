@@ -1,5 +1,4 @@
 ﻿using System;
-using Kalavarda.Primitives;
 using Kalavarda.Primitives.Abstract;
 using Kalavarda.Primitives.Geometry;
 using Kalavarda.Primitives.Process;
@@ -8,40 +7,16 @@ using Room.Core.Models;
 
 namespace Room.Core.Skills
 {
-    public class FireballSkill: ISkill
+    public class FireballSkill: SkillBase
     {
-        private readonly TimeLimiter _timeLimiter;
-
-        public string Name => "Сгусток огня";
-
-        public float MaxDistance { get; }
+        public override string Name => "Сгусток огня";
 
         public float Speed { get; }
 
-        public ITimeLimiter TimeLimiter => _timeLimiter;
-
-        public ISkillProcessFactory SkillProcessFactory { get; }
-
         public FireballSkill(TimeSpan interval, float speed, float maxDistance, ISkillProcessFactory processFactory)
+            :base(maxDistance, interval, processFactory)
         {
-            MaxDistance = maxDistance;
-            _timeLimiter = new TimeLimiter(interval);
-            SkillProcessFactory = processFactory ?? throw new ArgumentNullException(nameof(processFactory));
             Speed = speed;
-        }
-
-        public IProcess Use(ISkilled initializer)
-        {
-            IProcess fireballProcess = null;
-            _timeLimiter.Do(() =>
-            {
-                if (initializer is ICreature creature)
-                    if (creature.IsDead)
-                        return;
-
-                fireballProcess = SkillProcessFactory.Create(initializer, this);
-            });
-            return fireballProcess;
         }
     }
 

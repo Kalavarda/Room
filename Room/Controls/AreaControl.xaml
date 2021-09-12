@@ -1,5 +1,12 @@
 ﻿<UserControl x:Class="Room.Controls.AreaControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Ellipse Fill="#20FF0000"/>
+    <Grid>
+        <Ellipse Fill="#40FF0000"/>
+        <Ellipse Fill="#20FFFF00" x:Name="_timerEllipse">
+            <Ellipse.RenderTransform>
+                <ScaleTransform x:Name="_scale"/>
+            </Ellipse.RenderTransform>
+        </Ellipse>
+    </Grid>
 </UserControl>

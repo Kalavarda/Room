@@ -7,8 +7,8 @@
 
     <Grid>
         <controls:GameControl x:Name="_gameControl"/>
-        <controls1:RangeControl x:Name="_heroHP" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10" Width="400" Height="40" MainBrush="Green"/>
-        <controls1:RangeControl x:Name="_bossHP" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10" Width="400" Height="40" MainBrush="Maroon"/>
+        <controls1:RangeControl x:Name="_heroHP" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="20" Width="400" Height="40" MainBrush="Green"/>
+        <controls1:RangeControl x:Name="_bossHP" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="20" Width="400" Height="40" MainBrush="Maroon"/>
         <Border x:Name="_bPause" Background="#80000000" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" Padding="10">
             <TextBlock Text="П А У З А" Foreground="Yellow"/>
         </Border>
