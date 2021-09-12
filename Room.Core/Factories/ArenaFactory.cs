@@ -23,8 +23,8 @@ namespace Room.Core.Factories
                     boss.HP.SetMax();
 
                     var arena = new Arena(boss);
-                    arena.Size.Width = 20;
-                    arena.Size.Height = 20;
+                    arena.Bounds.Size.Width = 20;
+                    arena.Bounds.Size.Height = 20;
                     return arena;
 
                 default:

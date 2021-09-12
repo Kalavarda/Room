@@ -28,6 +28,9 @@ namespace Room.Core.Factories
                 return new FireballProcess((IHasBounds)initializer, skill, target, _game);
             }
 
+            if (skill is TeleportSkill teleport)
+                return new TeleportProcess(initializer, teleport, _game.Arena);
+
             throw new NotImplementedException();
         }
     }

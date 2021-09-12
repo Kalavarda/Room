@@ -1,4 +1,5 @@
 ﻿using System;
+using Kalavarda.Primitives.Geometry;
 using Kalavarda.Primitives.Process;
 using Room.Core.Models;
 
@@ -23,11 +24,7 @@ namespace Room.Processes
             var x = _hero.Position.X + dt * speed * MathF.Cos(_hero.MoveDirection.Value);
             var y = _hero.Position.Y + dt * speed * MathF.Sin(_hero.MoveDirection.Value);
 
-            var w = _arena.Size.Width / 2;
-            if (x < -w || x > w)
-                return;
-            var h = _arena.Size.Height / 2;
-            if (y < -h || y > h)
+            if (!_arena.Bounds.DoesIntersect(x, y))
                 return;
 
             _hero.Position.Set(x, y);

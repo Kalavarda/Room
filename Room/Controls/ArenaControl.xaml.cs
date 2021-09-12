@@ -18,8 +18,8 @@ namespace Room.Controls
 
                 if (_arena != null)
                 {
-                    Width = _arena.Size.Width;
-                    Height = _arena.Size.Height;
+                    Width = _arena.Bounds.Width;
+                    Height = _arena.Bounds.Height;
                 }
             }
         }

@@ -7,10 +7,12 @@ namespace Room.Core.Models
         public Arena(Boss boss)
         {
             Boss = boss;
+
+            Bounds = new RectBounds(new PointF());
         }
 
-        public SizeF Size { get; } = new SizeF();
-
         public Boss Boss { get; }
+
+        public BoundsF Bounds { get; }
     }
 }

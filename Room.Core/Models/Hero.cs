@@ -4,11 +4,12 @@ using Kalavarda.Primitives;
 using Kalavarda.Primitives.Abstract;
 using Kalavarda.Primitives.Geometry;
 using Kalavarda.Primitives.Skills;
+using Room.Core.Abstract;
 using Room.Core.Skills;
 
 namespace Room.Core.Models
 {
-    public class Hero: IHasPosition, IHasBounds, IPhysicalObject, ICreatureExt, ISkilled, IChildItemsOwner, IChildItemsOwnerExt
+    public class Hero: IHasPosition, IHasBounds, IPhysicalObject, ICreatureExt, ISkilled, IChildItemsOwner, IChildItemsOwnerExt, ILooking
     {
         private readonly ISkill[] _skills;
 
@@ -54,9 +55,10 @@ namespace Room.Core.Models
                 Died?.Invoke(this);
             };
 
-            _skills = new []
+            _skills = new ISkill[]
             {
-                new FireballSkill(TimeSpan.FromSeconds(2), 3, 10, skillProcessFactory)
+                new FireballSkill(TimeSpan.FromSeconds(2), 3, 10, skillProcessFactory),
+                new TeleportSkill(4, TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(0.2), skillProcessFactory)
             };
         }
 
