@@ -9,41 +9,39 @@ using Room.Windows;
 
 namespace Room.Controllers
 {
-    public class GameController
+    public class GameController: IDisposable
     {
-        private readonly TimeSpan _waitTime = TimeSpan.FromSeconds(7);
+        private readonly TimeSpan _waitTime = TimeSpan.FromSeconds(3);
 
         private readonly Game _game;
         private readonly IAwardsSource _awardsSource;
         private readonly IFinesSource _finesSource;
         private readonly IGameWindow _gameWindow;
-        private readonly IArenaFactory _arenaFactory;
         private readonly IProcessor _processor;
         private readonly ILevelMultiplier _levelMultiplier;
         private BossProcess _bossProcess;
         private readonly DispatcherTimer _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.5) };
         private DateTime _arenaCreationTime;
 
-        public GameController(Game game, IAwardsSource awardsSource, IFinesSource finesSource, IGameWindow gameWindow, IArenaFactory arenaFactory, IProcessor processor, ILevelMultiplier levelMultiplier)
+        public GameController(Game game, IAwardsSource awardsSource, IFinesSource finesSource, IGameWindow gameWindow, IProcessor processor, ILevelMultiplier levelMultiplier)
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
             _awardsSource = awardsSource ?? throw new ArgumentNullException(nameof(awardsSource));
             _finesSource = finesSource ?? throw new ArgumentNullException(nameof(finesSource));
             _gameWindow = gameWindow ?? throw new ArgumentNullException(nameof(gameWindow));
-            _arenaFactory = arenaFactory ?? throw new ArgumentNullException(nameof(arenaFactory));
             _processor = processor ?? throw new ArgumentNullException(nameof(processor));
             _levelMultiplier = levelMultiplier ?? throw new ArgumentNullException(nameof(levelMultiplier));
 
-            _game.Hero.Level = 0;
             LevelUp();
 
             _game.Hero.ItemsContainer.Changed += ItemsContainer_Changed;
             _game.Hero.Died += Hero_Died;
+            
+            // TODO убрать подписку
             _game.ArenaChanged += _game_ArenaChanged;
+            _game_ArenaChanged(_game, null, _game.Arena);
 
             _timer.Tick += _timer_Tick;
-
-            StartNewArena(1);
         }
 
         private void ItemsContainer_Changed(IGameItemType type, long count)
@@ -101,25 +99,29 @@ namespace Room.Controllers
 
             _gameWindow.ShowInformation("Победа!", () =>
             {
-                StartNewArena(_game.Hero.Level);
+                _gameWindow.Close();
             });
         }
 
-        private void Hero_Died(Kalavarda.Primitives.Abstract.ICreature hero)
+        private void Hero_Died(ICreature hero)
         {
             _game.Hero.MoveSpeed.Value = 0;
             _finesSource.Fine();
             _gameWindow.ShowWarning("Не фортануло...", () =>
             {
-                StartNewArena(_game.Hero.Level);
+                _gameWindow.Close();
             });
         }
 
-        private void StartNewArena(ushort level)
+        public void Dispose()
         {
-            _game.Hero.Ressurect();
-            _game.Arena = _arenaFactory.Create(level);
-            _game.Hero.Position.Set(-_game.Arena.Bounds.Width / 4, _game.Arena.Bounds.Height / 4);
+            _timer.Tick -= _timer_Tick;
+            _timer.Stop();
+
+            _game.Hero.Died -= Hero_Died;
+            _game.Hero.ItemsContainer.Changed -= ItemsContainer_Changed;
+
+            _game.ArenaChanged -= _game_ArenaChanged;
         }
     }
 }

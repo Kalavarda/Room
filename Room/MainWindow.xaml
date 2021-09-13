@@ -1,4 +1,29 @@
 ﻿<Window x:Class="Room.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Room.Controls"
+        Width="800" Height="400">
+
+    <Window.Resources>
+        <Style TargetType="Button" BasedOn="{StaticResource DefaultButton}"/>
+        <Style TargetType="ListBox">
+            <Setter Property="Margin" Value="8"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <controls:ArenaSelector x:Name="_arenaSelector" Grid.Column="1"/>
+
+        <Button Grid.Column="1" Grid.Row="1" Content="Начать" Click="OnStartClick"/>
+    </Grid>
 </Window>

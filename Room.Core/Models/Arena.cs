@@ -14,5 +14,10 @@ namespace Room.Core.Models
         public Boss Boss { get; }
 
         public BoundsF Bounds { get; }
+
+        public override string ToString()
+        {
+            return "Уровень " + Boss.Level;
+        }
     }
 }

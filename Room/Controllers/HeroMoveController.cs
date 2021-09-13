@@ -7,9 +7,10 @@ using Room.Core.Models;
 
 namespace Room.Controllers
 {
-    public class HeroMoveController
+    public class HeroMoveController: IDisposable
     {
         private readonly Hero _hero;
+        private readonly IInputElement _uiElement;
         private readonly Mode _mode;
         private bool _upPressed;
         private bool _downPressed;
@@ -20,6 +21,7 @@ namespace Room.Controllers
         public HeroMoveController(Hero hero, IInputElement uiElement, Mode mode)
         {
             _hero = hero ?? throw new ArgumentNullException(nameof(hero));
+            _uiElement = uiElement;
             _mode = mode;
 
             uiElement.KeyDown += UiElement_KeyDown;
@@ -170,6 +172,13 @@ namespace Room.Controllers
         {
             Simple,
             ByLook
+        }
+
+        public void Dispose()
+        {
+            _timer.Stop();
+            _uiElement.KeyDown -= UiElement_KeyDown;
+            _uiElement.KeyUp -= UiElement_KeyUp;
         }
     }
 }

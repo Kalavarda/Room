@@ -21,15 +21,7 @@ namespace Room.Core.Factories
         {
             switch (level)
             {
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                case 6:
-                case 7:
-                case 8:
-                case 9:
+                default:
                     var boss = new Boss(level, _bossSkillProcessFactory);
                     boss.HP.Max = _levelMultiplier.GetValue(1000, level);
                     boss.HP.SetMax();
@@ -38,9 +30,6 @@ namespace Room.Core.Factories
                     arena.Bounds.Size.Width = 20;
                     arena.Bounds.Size.Height = 20;
                     return arena;
-
-                default:
-                    throw new NotImplementedException();
             }
         }
     }

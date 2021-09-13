@@ -13,8 +13,6 @@
         <controls1:RangeControl x:Name="_bossHP" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="50" Width="400" Height="40" MainBrush="Maroon"/>
         
         <controls1:RangeControl x:Name="_XP" VerticalAlignment="Bottom" Height="10" MainBrush="Aqua"/>
-
-        <controls:LogControl x:Name="_log" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="320" Height="160"/>
         
         <Border HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="25">
             <StackPanel Orientation="Horizontal">
@@ -31,7 +29,7 @@
         </Border>
 
         <Border x:Name="_bGetReady" Background="#80000000" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20" Padding="20">
-            <TextBlock x:Name="_tbGetReady" Text="5 сек." Foreground="Yellow" FontSize="32"/>
+            <TextBlock x:Name="_tbGetReady" Foreground="Yellow" FontSize="32" MinWidth="200" TextAlignment="Center"/>
         </Border>
     </Grid>
 </Window>

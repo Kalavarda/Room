@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using Kalavarda.Primitives.WPF;
@@ -15,11 +16,16 @@ namespace Room.Windows
         void ShowWarning(string text, Action onClose);
 
         void ShowGetReady(TimeSpan waitTime);
+        
+        void Close();
     }
 
     public partial class GameWindow : IGameWindow
     {
         private readonly AppContext _appContext;
+        private HeroMoveProcess _heroMoveProcess;
+        private HeroMoveController _heroMoveController;
+        private SkillController _skillController;
 
         public GameWindow()
         {
@@ -37,17 +43,18 @@ namespace Room.Windows
         {
             _gameControl.AppContext = _appContext;
 
-            _appContext.Game.ArenaChanged += Game_ArenaChanged;
-            Game_ArenaChanged(_appContext.Game, null, _appContext.Game.Arena);
-
             var hero = _appContext.Game.Hero;
 
-            new HeroMoveController(hero, this, HeroMoveController.Mode.ByLook);
-            new SkillController(hero, this, _appContext.Processor, _appContext.HeroSkillBinds);
+            _heroMoveProcess = new HeroMoveProcess(hero, _appContext.Game.Arena);
+            _appContext.Processor.Add(_heroMoveProcess);
+            _bossHP.Range = _appContext.Game.Arena.Boss.HP;
+
+            _heroMoveController = new HeroMoveController(hero, this, HeroMoveController.Mode.ByLook);
+            _skillController = new SkillController(hero, this, _appContext.Processor, _appContext.HeroSkillBinds);
 
             _heroHP.Range = hero.HP;
             _XP.Range = hero.XP;
-            _log.ItemsContainer = hero.ItemsContainer;
+
 
             _skillControl1.Skill = _appContext.HeroSkillBinds.GetSkill(Hero.SkillKey_Fireball);
             _skillControl1.Bind = _appContext.HeroSkillBinds.GetBind(Hero.SkillKey_Fireball);
@@ -67,13 +74,13 @@ namespace Room.Windows
             TuneControls();
         }
 
-        private void Game_ArenaChanged(Game game, Arena oldArena, Arena newArena)
+        protected override void OnClosing(CancelEventArgs e)
         {
-            if (newArena != null)
-            {
-                _appContext.Processor.Add(new HeroMoveProcess(_appContext.Game.Hero, newArena));
-                _bossHP.Range = newArena.Boss.HP;
-            }
+            _heroMoveProcess.Stop();
+            _heroMoveController.Dispose();
+            _skillController.Dispose();
+
+            base.OnClosing(e);
         }
 
         private void TuneControls()

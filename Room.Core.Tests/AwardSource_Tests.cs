@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Kalavarda.Primitives.Abstract;
-using Kalavarda.Primitives.Utils;
 using Moq;
 using NUnit.Framework;
 using Room.Core.Abstract;
@@ -16,8 +14,8 @@ namespace Room.Core.Tests
         private readonly Mock<IRandom> _random = new Mock<IRandom>();
 
         [TestCase(1, 100)]
-        [TestCase(3, 200)]
-        [TestCase(5, 400)]
+        [TestCase(5, 200)]
+        [TestCase(9, 400)]
         public void XP_Test(int level, long expectedXP)
         {
             _boss
