@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Kalavarda.Primitives.Abstract;
 using Kalavarda.Primitives.Geometry;
 using Kalavarda.Primitives.Process;
@@ -64,30 +65,37 @@ namespace Room.Core.Skills
             var h = _game.Arena.Bounds.Height / 2;
             var maxR = MathF.Sqrt(w * w + h * h);
 
+            var areas = new List<RoundArea>();
             for (var i = 0; i < _skill.Count; i++)
             {
                 RoundArea area;
                 if (_skill.Count > 1)
                 {
-                    var r = maxR * _random.Float();
-                    var a = 2 * MathF.PI * _random.Float();
-                    var x = _game.Arena.Bounds.Position.X + r * MathF.Cos(a);
-                    var y = _game.Arena.Bounds.Position.Y + r * MathF.Sin(a);
-                    area = CreateArea(skill, new PointF(x, y), childItemsOwner);
+                    RoundBounds bounds;
+                    do
+                    {
+                        var r = maxR * _random.Float();
+                        var a = 2 * MathF.PI * _random.Float();
+                        var x = _game.Arena.Bounds.Position.X + r * MathF.Cos(a);
+                        var y = _game.Arena.Bounds.Position.Y + r * MathF.Sin(a);
+                        bounds = new RoundBounds(new PointF(x, y), skill.MaxDistance / skill.Count);
+                    } while (areas.Select(a => a.Bounds).Any(b => b.DoesIntersect(bounds)));
+                    area = CreateArea(childItemsOwner, bounds);
+                    areas.Add(area);
                 }
                 else
                 {
                     var center = ((IHasBounds) _initializer).Bounds.Position;
-                    area = CreateArea(skill, center, childItemsOwner);
+                    area = CreateArea(childItemsOwner, new RoundBounds(center, skill.MaxDistance / skill.Count));
                 }
 
                 _areas.Add(area);
             }
         }
 
-        private RoundArea CreateArea(RoundAreaSkill skill, PointF center, IChildItemsOwnerExt childItemsOwner)
+        private RoundArea CreateArea(IChildItemsOwnerExt childItemsOwner, RoundBounds bounds)
         {
-            var area = new RoundArea(new RoundBounds(center, skill.MaxDistance / skill.Count), childItemsOwner.ChildItemsContainer)
+            var area = new RoundArea(bounds, childItemsOwner.ChildItemsContainer)
             {
                 FullRemain = _skill.WaitTime,
                 Remain = _skill.WaitTime

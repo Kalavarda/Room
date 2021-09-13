@@ -41,7 +41,7 @@ namespace Room.Core.Models
                     return false;
 
                 _dictionary[itemType] = newValue;
-                Changed?.Invoke(itemType, count);
+                Changed?.Invoke(itemType, -count);
                 return true;
             }
             else

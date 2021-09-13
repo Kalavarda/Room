@@ -36,7 +36,12 @@ namespace Room
         public AppContext()
         {
             var soundPlayer = new SoundPlayer();
-            Game = new Game(soundPlayer);
+
+            var heroSkillProcessFactory = new HeroSkillProcessFactory(soundPlayer);
+            var hero = new Hero(new HeroSkillsFactory(heroSkillProcessFactory));
+            Game = new Game(hero);
+            heroSkillProcessFactory.Game = Game;
+
             AwardsSource = new AwardSource(LevelMultiplier, RandomImpl.Instance);
             FinesSource = new FinesSource(Game.Hero);
             Processor = new MultiProcessor(60, _cancellationTokenSource.Token);

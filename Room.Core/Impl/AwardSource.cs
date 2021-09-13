@@ -22,8 +22,8 @@ namespace Room.Core.Impl
             var xp = _multiplier.GetValue(100, killedBoss.Level);
             return new Dictionary<IGameItemType, long>
             {
-                { GameItemTypeTypes.XP, xp },
-                { GameItemTypeTypes.SmallHealthPotion, _random.Int(1, 3) }
+                { GameItemTypes.XP, xp },
+                { GameItemTypes.SmallHealthPotion, _random.Int(1, 3) }
             };
         }
     }

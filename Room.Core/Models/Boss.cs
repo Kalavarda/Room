@@ -18,7 +18,7 @@ namespace Room.Core.Models
                 new FireballSkill(TimeSpan.FromSeconds(1), 4, 15, -20, skillProcessFactory),
                 new RoundAreaSkill(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(2), -10, 1, skillProcessFactory),
                 new RoundAreaSkill(15, TimeSpan.FromSeconds(20), TimeSpan.FromSeconds(1), -50, 1, skillProcessFactory),
-                new RoundAreaSkill(30, TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(2), -5, 20, skillProcessFactory)
+                new RoundAreaSkill(30, TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(2), -25, 20, skillProcessFactory)
             };
         }
     }

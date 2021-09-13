@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Kalavarda.Primitives;
 using Kalavarda.Primitives.Abstract;
 using Kalavarda.Primitives.Geometry;
 using Kalavarda.Primitives.Skills;
 using Room.Core.Abstract;
-using Room.Core.Skills;
 
 namespace Room.Core.Models
 {
@@ -63,7 +63,7 @@ namespace Room.Core.Models
 
         public IGameItemsContainerExt ItemsContainer { get; } = new GameItemsContainer();
 
-        public Hero(ISkillProcessFactory skillProcessFactory)
+        public Hero(ISkillsFactory skillsFactory)
         {
             HP.SetMax();
             HP.ValueMin += hp =>
@@ -72,14 +72,7 @@ namespace Room.Core.Models
                 Died?.Invoke(this);
             };
 
-            _skills = new ISkill[]
-            {
-                new FireballSkill(TimeSpan.FromSeconds(2), 3, 4, -25, skillProcessFactory) { Key = SkillKey_Fireball },
-                new TeleportSkill(4, TimeSpan.FromSeconds(20), TimeSpan.FromSeconds(0.2), false, false, skillProcessFactory) { Key = SkillKey_Teleport_Forward },
-                new TeleportSkill(1, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(0.2), true, true, skillProcessFactory) { Key = SkillKey_Teleport_Backward },
-                new HealSkill(10, TimeSpan.FromSeconds(30)) { Key = SkillKey_Healing },
-                new UseItemSkill(this, GameItemTypeTypes.SmallHealthPotion)
-            };
+            _skills = skillsFactory.Create(this).ToArray();
         }
 
         public IReadOnlyCollection<ISkill> Skills => _skills;

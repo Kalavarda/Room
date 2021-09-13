@@ -48,7 +48,7 @@ namespace Room.Controllers
 
         private void ItemsContainer_Changed(IGameItemType type, long count)
         {
-            if (type == GameItemTypeTypes.XP)
+            if (type == GameItemTypes.XP)
             {
                 _game.Hero.XP.Value += count;
                 if (_game.Hero.XP.IsMax)

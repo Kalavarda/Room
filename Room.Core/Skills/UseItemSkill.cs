@@ -1,5 +1,6 @@
 ﻿using System;
 using Kalavarda.Primitives;
+using Kalavarda.Primitives.Abstract;
 using Kalavarda.Primitives.Process;
 using Kalavarda.Primitives.Skills;
 using Room.Core.Abstract;
@@ -7,7 +8,7 @@ using Room.Core.Models;
 
 namespace Room.Core.Skills
 {
-    public class UseItemSkill: ISkill, IHasKey, IHasCount<long>
+    public class UseItemSkill: ISkill, IHasKey, IHasCount<long>, IHasImage
     {
         private readonly Hero _hero;
         private readonly TimeLimiter _timeLimiter;
@@ -38,7 +39,7 @@ namespace Room.Core.Skills
 
         public IProcess Use(ISkilled initializer)
         {
-            if (_itemType == GameItemTypeTypes.SmallHealthPotion)
+            if (_itemType == GameItemTypes.SmallHealthPotion)
                 if (_hero.ItemsContainer.TryChangeCount(_itemType, -1))
                     _timeLimiter.Do(() =>
                     {
@@ -54,5 +55,7 @@ namespace Room.Core.Skills
         public long? Max => null;
         
         public event Action<IHasCount<long>> CountChanged;
+        
+        public Uri ImageUri => _itemType.ImageUri;
     }
 }

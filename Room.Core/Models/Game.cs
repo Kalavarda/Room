@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Kalavarda.Primitives.Abstract;
-using Room.Core.Abstract;
-using Room.Core.Factories;
 
 namespace Room.Core.Models
 {
@@ -10,9 +8,9 @@ namespace Room.Core.Models
     {
         private Arena _arena;
 
-        public Game(ISoundPlayer soundPlayer)
+        public Game(Hero hero)
         {
-            Hero = new Hero(new HeroSkillProcessFactory(this, soundPlayer));
+            Hero = hero ?? throw new ArgumentNullException(nameof(hero));
         }
 
         public Arena Arena

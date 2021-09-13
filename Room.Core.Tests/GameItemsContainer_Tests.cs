@@ -10,9 +10,9 @@ namespace Room.Core.Tests
         public void TryChangeXP_Test(long xp, bool success)
         {
             var container = new GameItemsContainer();
-            var result = container.TryChangeCount(GameItemTypeTypes.XP, xp);
+            var result = container.TryChangeCount(GameItemTypes.XP, xp);
             Assert.AreEqual(success, result);
-            result = container.TryChangeCount(GameItemTypeTypes.XP, xp);
+            result = container.TryChangeCount(GameItemTypes.XP, xp);
             Assert.AreEqual(success, result);
         }
     }

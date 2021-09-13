@@ -25,7 +25,9 @@ namespace Room.Controllers
             var mousePos = e.GetPosition(_uiElement);
             var dx = (float)mousePos.X - _hero.Position.X;
             var dy = (float)mousePos.Y - _hero.Position.Y;
-            _hero.LookDirection.Value = MathF.Atan2(dy, dx);
+            var distance = MathF.Sqrt(dx * dx + dy * dy);
+            if (distance > 0.1f)
+                _hero.LookDirection.Value = MathF.Atan2(dy, dx);
             
             e.Handled = true;
         }

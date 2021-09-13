@@ -11,12 +11,12 @@ namespace Room.Core.Factories
 {
     public class HeroSkillProcessFactory : ISkillProcessFactory
     {
-        private readonly Game _game;
+        public Game Game { get; set; }
+
         private readonly ISoundPlayer _soundPlayer;
 
-        public HeroSkillProcessFactory(Game game, ISoundPlayer soundPlayer)
+        public HeroSkillProcessFactory(ISoundPlayer soundPlayer)
         {
-            _game = game ?? throw new ArgumentNullException(nameof(game));
             _soundPlayer = soundPlayer;
         }
 
@@ -24,15 +24,15 @@ namespace Room.Core.Factories
         {
             if (skill is FireballSkill fireball)
             {
-                var dx = skill.MaxDistance * MathF.Cos(_game.Hero.LookDirection.Value);
-                var dy = skill.MaxDistance * MathF.Sin(_game.Hero.LookDirection.Value);
-                var target = new RoundBounds(new PointF(_game.Hero.Position.X + dx, _game.Hero.Position.Y + dy), 0);
+                var dx = skill.MaxDistance * MathF.Cos(Game.Hero.LookDirection.Value);
+                var dy = skill.MaxDistance * MathF.Sin(Game.Hero.LookDirection.Value);
+                var target = new RoundBounds(new PointF(Game.Hero.Position.X + dx, Game.Hero.Position.Y + dy), 0);
 
-                return new FireballProcess((IHasBounds)initializer, fireball, target, _game, _soundPlayer);
+                return new FireballProcess((IHasBounds)initializer, fireball, target, Game, _soundPlayer);
             }
 
             if (skill is TeleportSkill teleport)
-                return new TeleportProcess(initializer, teleport, _game);
+                return new TeleportProcess(initializer, teleport, Game);
 
             throw new NotImplementedException();
         }

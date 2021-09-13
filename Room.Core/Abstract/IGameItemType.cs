@@ -7,5 +7,7 @@ namespace Room.Core.Abstract
         string Name { get; }
 
         TimeSpan UseInterval { get; }
+
+        Uri ImageUri { get; }
     }
 }

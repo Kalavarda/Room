@@ -5,6 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\ItemTypes\SmallHealthPotion.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\ItemTypes\SmallHealthPotion.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Primitives\Kalavarda.Primitives\Kalavarda.Primitives.csproj" />
   </ItemGroup>
 
