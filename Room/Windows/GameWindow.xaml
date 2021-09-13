@@ -16,12 +16,13 @@
 
         <controls:LogControl x:Name="_log" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="320" Height="160"/>
         
-        <Border HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="50">
+        <Border HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="25">
             <StackPanel Orientation="Horizontal">
                 <controls1:SkillControl x:Name="_skillControl1" Margin="2"/>
                 <controls1:SkillControl x:Name="_skillControl2" Margin="2"/>
                 <controls1:SkillControl x:Name="_skillControl3" Margin="2"/>
                 <controls1:SkillControl x:Name="_skillControl4" Margin="2"/>
+                <controls1:SkillControl x:Name="_skillControl5" Margin="2"/>
             </StackPanel>
         </Border>
 

@@ -15,6 +15,7 @@ namespace Room.Core.Models
         public const string SkillKey_Teleport_Forward = "Teleport_Forward";
         public const string SkillKey_Teleport_Backward = "Teleport_Backward";
         public const string SkillKey_Healing = "Healing_Simple";
+        public const string SkillKey_Use_ = "Use_";
 
         private readonly ISkill[] _skills;
 
@@ -73,10 +74,11 @@ namespace Room.Core.Models
 
             _skills = new ISkill[]
             {
-                new FireballSkill(TimeSpan.FromSeconds(2), 3, 4, -10, skillProcessFactory) { Key = SkillKey_Fireball },
+                new FireballSkill(TimeSpan.FromSeconds(2), 3, 4, -25, skillProcessFactory) { Key = SkillKey_Fireball },
                 new TeleportSkill(4, TimeSpan.FromSeconds(20), TimeSpan.FromSeconds(0.2), false, false, skillProcessFactory) { Key = SkillKey_Teleport_Forward },
                 new TeleportSkill(1, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(0.2), true, true, skillProcessFactory) { Key = SkillKey_Teleport_Backward },
-                new HealSkill(10, TimeSpan.FromSeconds(30)) { Key = SkillKey_Healing }
+                new HealSkill(10, TimeSpan.FromSeconds(30)) { Key = SkillKey_Healing },
+                new UseItemSkill(this, GameItemTypeTypes.SmallHealthPotion)
             };
         }
 

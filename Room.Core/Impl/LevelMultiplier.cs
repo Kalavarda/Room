@@ -1,6 +1,5 @@
 ﻿using System;
 using Kalavarda.Primitives.Abstract;
-using Room.Core.Abstract;
 
 namespace Room.Core.Impl
 {
@@ -14,6 +13,11 @@ namespace Room.Core.Impl
         public float GetValue(float baseValue, ushort level)
         {
             return baseValue * GetRatio(level);
+        }
+
+        public long GetValue(int baseValue, ushort level)
+        {
+            return (long)MathF.Round(baseValue * GetRatio(level));
         }
     }
 }

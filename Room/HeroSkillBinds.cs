@@ -24,7 +24,8 @@ namespace Room
             new SkillBind(Hero.SkillKey_Teleport_Forward, Key.D5),
             new SkillBind(Hero.SkillKey_Teleport_Forward, null, MouseButton.Middle),
             new SkillBind(Hero.SkillKey_Teleport_Backward, Key.C),
-            new SkillBind(Hero.SkillKey_Healing, Key.D2)
+            new SkillBind(Hero.SkillKey_Healing, Key.D2),
+            new SkillBind(Hero.SkillKey_Use_ + GameItemTypeTypes.SmallHealthPotion.Name, Key.D0)
         };
 
         public ISkill GetSkill(string key)

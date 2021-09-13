@@ -7,6 +7,6 @@ namespace Room.Core.Abstract
         /// <summary>
         /// Создаёт награды
         /// </summary>
-        IReadOnlyDictionary<IGameItemType, float> GetAwards(IHasLevel killedBoss);
+        IReadOnlyDictionary<IGameItemType, long> GetAwards(IHasLevel killedBoss);
     }
 }

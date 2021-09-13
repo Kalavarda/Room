@@ -2,6 +2,7 @@
 using System.Threading;
 using Kalavarda.Primitives.Abstract;
 using Kalavarda.Primitives.Process;
+using Kalavarda.Primitives.Utils;
 using Kalavarda.Primitives.WPF.Abstract;
 using Kalavarda.Primitives.WPF.Skills;
 using Room.Core.Abstract;
@@ -36,7 +37,7 @@ namespace Room
         {
             var soundPlayer = new SoundPlayer();
             Game = new Game(soundPlayer);
-            AwardsSource = new AwardSource(LevelMultiplier);
+            AwardsSource = new AwardSource(LevelMultiplier, RandomImpl.Instance);
             FinesSource = new FinesSource(Game.Hero);
             Processor = new MultiProcessor(60, _cancellationTokenSource.Token);
             HeroSkillBinds = new HeroSkillBinds(Game.Hero);

@@ -4,7 +4,6 @@ using System.Diagnostics;
 using Kalavarda.Primitives.Utils;
 using Kalavarda.Primitives.WPF;
 using Room.Core.Abstract;
-using Room.Core.Models;
 
 namespace Room.Controls
 {
@@ -28,9 +27,12 @@ namespace Room.Controls
             }
         }
 
-        private void _itemsContainer_Changed(IGameItemType type, float count)
+        private void _itemsContainer_Changed(IGameItemType type, long count)
         {
-            AddLine($"Получено: {type.Name} {count.ToStr()}");
+            if (count > 0)
+                AddLine($"Вы получаете {count.ToStr()} [{type.Name}]");
+            else
+                AddLine($"Вы теряете {count.ToStr()} [{type.Name}]");
         }
 
         private void AddLine(string text)

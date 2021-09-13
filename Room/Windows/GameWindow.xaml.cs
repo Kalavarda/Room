@@ -61,6 +61,9 @@ namespace Room.Windows
             _skillControl4.Skill = _appContext.HeroSkillBinds.GetSkill(Hero.SkillKey_Teleport_Forward);
             _skillControl4.Bind = _appContext.HeroSkillBinds.GetBind(Hero.SkillKey_Teleport_Forward);
 
+            _skillControl5.Skill = _appContext.HeroSkillBinds.GetSkill(Hero.SkillKey_Use_ + GameItemTypeTypes.SmallHealthPotion.Name);
+            _skillControl5.Bind = _appContext.HeroSkillBinds.GetBind(Hero.SkillKey_Use_ + GameItemTypeTypes.SmallHealthPotion.Name);
+
             TuneControls();
         }
 

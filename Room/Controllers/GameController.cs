@@ -46,7 +46,7 @@ namespace Room.Controllers
             StartNewArena(1);
         }
 
-        private void ItemsContainer_Changed(IGameItemType type, float count)
+        private void ItemsContainer_Changed(IGameItemType type, long count)
         {
             if (type == GameItemTypeTypes.XP)
             {
@@ -93,10 +93,11 @@ namespace Room.Controllers
             _gameWindow.ShowGetReady(_arenaCreationTime + _waitTime - DateTime.Now);
         }
 
-        private void Boss_Died(Kalavarda.Primitives.Abstract.ICreature boss)
+        private void Boss_Died(ICreature boss)
         {
             var awards = _awardsSource.GetAwards((BossBase)boss);
-            _game.Hero.ItemsContainer.Add(awards);
+            foreach (var award in awards)
+                _game.Hero.ItemsContainer.TryChangeCount(award.Key, award.Value);
 
             _gameWindow.ShowInformation("Победа!", () =>
             {
