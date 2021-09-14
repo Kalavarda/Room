@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="Room.Controls.HeroInfo"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultText}"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Уровень"/>
+        <TextBlock x:Name="_tbLevel" Grid.Column="1"/>
+
+        <TextBlock Text="Опыт" Grid.Row="1"/>
+        <TextBlock x:Name="_tbXP" Grid.Row="1" Grid.Column="1"/>
+    </Grid>
+</UserControl>

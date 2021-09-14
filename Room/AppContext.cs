@@ -38,7 +38,7 @@ namespace Room
             var soundPlayer = new SoundPlayer();
 
             var heroSkillProcessFactory = new HeroSkillProcessFactory(soundPlayer);
-            var hero = new Hero(new HeroSkillsFactory(heroSkillProcessFactory)) { Level = 0 };
+            var hero = new Hero(new HeroSkillsFactory(heroSkillProcessFactory));
             Game = new Game(hero);
             heroSkillProcessFactory.Game = Game;
 

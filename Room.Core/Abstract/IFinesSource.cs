@@ -1,10 +1,12 @@
-﻿namespace Room.Core.Abstract
+﻿using System.Collections.Generic;
+
+namespace Room.Core.Abstract
 {
     public interface IFinesSource
     {
         /// <summary>
         /// Оштрафовать
         /// </summary>
-        void Fine();
+        IReadOnlyDictionary<IGameItemType, long> Fine();
     }
 }

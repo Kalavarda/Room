@@ -4,35 +4,44 @@ using System.Diagnostics;
 using Kalavarda.Primitives.Utils;
 using Kalavarda.Primitives.WPF;
 using Room.Core.Abstract;
+using Room.Core.Models;
 
 namespace Room.Controls
 {
     public partial class LogControl
     {
         private readonly IList<string> _lines = new List<string>();
-        private IGameItemsContainer _itemsContainer;
+        private Hero _hero;
 
-        public IGameItemsContainer ItemsContainer
+        public Hero Hero
         {
-            get => _itemsContainer;
+            get => _hero;
             set
             {
-                if (_itemsContainer == value)
+                if (_hero == value)
                     return;
 
-                _itemsContainer = value;
+                _hero = value;
 
-                if (_itemsContainer != null)
-                    _itemsContainer.Changed += _itemsContainer_Changed;
+                if (_hero != null)
+                {
+                    _hero.ItemsContainer.Changed += ItemsContainer_Changed;
+                    _hero.LevelChanged += Hero_LevelChanged;
+                }
             }
         }
 
-        private void _itemsContainer_Changed(IGameItemType type, long count)
+        private void Hero_LevelChanged()
+        {
+            AddLine($"Вы получаете уровень {_hero.Level}");
+        }
+
+        private void ItemsContainer_Changed(IGameItemType type, long count)
         {
             if (count > 0)
                 AddLine($"Вы получаете {count.ToStr()} [{type.Name}]");
             else
-                AddLine($"Вы теряете {count.ToStr()} [{type.Name}]");
+                AddLine($"Вы теряете {(-count).ToStr()} [{type.Name}]");
         }
 
         private void AddLine(string text)
@@ -42,7 +51,7 @@ namespace Room.Controls
                 Debug.WriteLine(text);
 
                 _lines.Add(text);
-                while (_lines.Count > 5)
+                while (_lines.Count > 10)
                     _lines.RemoveAt(0);
                 _tb.Text = string.Join(Environment.NewLine, _lines);
             });
