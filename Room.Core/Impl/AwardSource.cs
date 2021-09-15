@@ -23,7 +23,9 @@ namespace Room.Core.Impl
             return new Dictionary<IGameItemType, long>
             {
                 { GameItemTypes.XP, xp },
-                { GameItemTypes.SmallHealthPotion, _random.Int(1, 3) }
+                { GameItemTypes.SmallHealthPotion, _random.Int(1, 3) },
+                { EquipmentItem.OldNecklace, _random.Int(0, 1) },
+                { EquipmentItem.OldBelt, _random.Int(0, 1) }
             };
         }
     }

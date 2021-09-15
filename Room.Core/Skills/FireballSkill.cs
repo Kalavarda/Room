@@ -35,19 +35,21 @@ namespace Room.Core.Skills
         private readonly IHasPosition _target;
         private readonly Game _game;
         private readonly ISoundPlayer _soundPlayer;
+        private readonly IHpChanger _hpChanger;
         private readonly PointF _startPos;
 
         public event Action<IProcess> Completed;
 
         public Fireball Fireball { get; }
 
-        public FireballProcess(IHasBounds initializer, FireballSkill skill, IHasPosition target, Game game, ISoundPlayer soundPlayer)
+        public FireballProcess(IHasBounds initializer, FireballSkill skill, IHasPosition target, Game game, ISoundPlayer soundPlayer, IHpChanger hpChanger)
         {
             _initializer = initializer ?? throw new ArgumentNullException(nameof(initializer));
             _skill = skill ?? throw new ArgumentNullException(nameof(skill));
             _target = target ?? throw new ArgumentNullException(nameof(target));
             _game = game ?? throw new ArgumentNullException(nameof(game));
             _soundPlayer = soundPlayer ?? throw new ArgumentNullException(nameof(soundPlayer));
+            _hpChanger = hpChanger ?? throw new ArgumentNullException(nameof(hpChanger));
 
             Fireball = CreateFireball();
             var itemsOwner = ((IChildItemsOwnerExt)_initializer).ChildItemsContainer;
@@ -99,7 +101,7 @@ namespace Room.Core.Skills
                     if (obj.Bounds.DoesIntersect(Fireball.Bounds))
                     {
                         if (obj is ICreatureExt creatureExt)
-                            creatureExt.ChangeHP(_skill.HpChange, (ISkilled)_initializer, _skill);
+                            _hpChanger.ApplyChange(creatureExt, _skill.HpChange, (ISkilled)_initializer, _skill);
                         BeforeComplete();
                         Completed?.Invoke(this);
                         return;

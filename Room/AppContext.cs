@@ -33,12 +33,15 @@ namespace Room
 
         public IArenaFactory ArenaFactory { get; }
 
+        public IHpChanger HpChanger { get; }
+
         public AppContext()
         {
             var soundPlayer = new SoundPlayer();
+            HpChanger = new HpChanger(LevelMultiplier);
 
-            var heroSkillProcessFactory = new HeroSkillProcessFactory(soundPlayer);
-            var hero = new Hero(new HeroSkillsFactory(heroSkillProcessFactory));
+            var heroSkillProcessFactory = new HeroSkillProcessFactory(soundPlayer, HpChanger);
+            var hero = new Hero(new HeroSkillsFactory(heroSkillProcessFactory, HpChanger));
             Game = new Game(hero);
             heroSkillProcessFactory.Game = Game;
 
@@ -46,7 +49,7 @@ namespace Room
             FinesSource = new FinesSource(Game.Hero);
             Processor = new MultiProcessor(60, _cancellationTokenSource.Token);
             HeroSkillBinds = new HeroSkillBinds(Game.Hero);
-            ArenaFactory = new ArenaFactory(new BossSkillProcessFactory(Game, soundPlayer), LevelMultiplier);
+            ArenaFactory = new ArenaFactory(new BossSkillProcessFactory(Game, soundPlayer, HpChanger, RandomImpl.Instance), LevelMultiplier);
         }
 
         public void Dispose()

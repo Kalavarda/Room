@@ -14,8 +14,8 @@ namespace Room.Core.Tests
         private readonly Mock<IRandom> _random = new Mock<IRandom>();
 
         [TestCase(1, 100)]
-        [TestCase(5, 200)]
-        [TestCase(9, 400)]
+        [TestCase(3, 200)]
+        [TestCase(5, 400)]
         public void XP_Test(int level, long expectedXP)
         {
             _boss

@@ -63,21 +63,26 @@ namespace Room.Core.Models
 
         public event Action<ICreature> Died;
 
-        public Modifiers Modifiers { get; } = new Modifiers();
+        public IModifiers Modifiers => Equipment.Modifiers;
 
         public void ChangeHP(float value, ISkilled initializer, ISkill skill)
         {
-            if (!Modifiers.InvFrame) // TODO: unit-test
-            {
-                var oldValue = HP.Value;
-                HP.Value += value;
-                HpChanged?.Invoke(new HpChange(this, HP.Value - oldValue, initializer, skill));
-            }
+            var oldValue = HP.Value;
+            HP.Value += value;
+            HpChanged?.Invoke(new HpChange(this, HP.Value - oldValue, initializer, skill));
         }
 
         public event Action<HpChange> HpChanged;
 
-        public IGameItemsContainerExt ItemsContainer { get; } = new GameItemsContainer();
+        public IGameItemsContainerExt Bag { get; } = new GameItemsContainer();
+
+        public HeroEquipment Equipment { get; } = new HeroEquipment();
+
+        public IReadOnlyCollection<ISkill> Skills => _skills;
+        
+        public IChildItemsContainerExt ChildItemsContainer { get; } = new ChildItemsContainer();
+        
+        IChildItemsContainer IChildItemsOwner.ChildItemsContainer => ChildItemsContainer;
 
         public Hero(ISkillsFactory skillsFactory)
         {
@@ -89,13 +94,11 @@ namespace Room.Core.Models
             };
 
             _skills = skillsFactory.Create(this).ToArray();
-        }
 
-        public IReadOnlyCollection<ISkill> Skills => _skills;
-        
-        public IChildItemsContainerExt ChildItemsContainer { get; } = new ChildItemsContainer();
-        
-        IChildItemsContainer IChildItemsOwner.ChildItemsContainer => ChildItemsContainer;
+            //Bag.TryChangeCount(GameItemTypes.SmallHealthPotion, 3);
+            //Bag.TryChangeCount(EquipmentItem.OldNecklace, 1);
+            //Bag.TryChangeCount(EquipmentItem.OldBelt, 1);
+        }
 
         /// <summary>
         /// Воскресить

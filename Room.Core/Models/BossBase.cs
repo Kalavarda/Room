@@ -26,7 +26,7 @@ namespace Room.Core.Models
         
         public bool IsDead { get; private set; }
         
-        public Modifiers Modifiers { get; } = new Modifiers();
+        public IModifiers Modifiers { get; } = new Modifiers();
         
         public IChildItemsContainerExt ChildItemsContainer { get; } = new ChildItemsContainer();
         

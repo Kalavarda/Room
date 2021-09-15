@@ -13,6 +13,7 @@ namespace Room.Core.Skills
         private readonly Hero _hero;
         private readonly TimeLimiter _timeLimiter;
         private readonly IGameItemType _itemType;
+        private readonly IHpChanger _hpChanger;
 
         public string Name => _itemType.Name;
 
@@ -20,13 +21,14 @@ namespace Room.Core.Skills
 
         public ITimeLimiter TimeLimiter => _timeLimiter;
 
-        public UseItemSkill(Hero hero, IGameItemType itemType)
+        public UseItemSkill(Hero hero, IGameItemType itemType, IHpChanger hpChanger)
         {
             _hero = hero ?? throw new ArgumentNullException(nameof(hero));
             _itemType = itemType ?? throw new ArgumentNullException(nameof(itemType));
+            _hpChanger = hpChanger ?? throw new ArgumentNullException(nameof(hpChanger));
             _timeLimiter = new TimeLimiter(itemType.UseInterval);
 
-            _hero.ItemsContainer.Changed += ItemsContainer_Changed;
+            _hero.Bag.Changed += ItemsContainer_Changed;
         }
 
         private void ItemsContainer_Changed(IGameItemType itemType, long count)
@@ -40,17 +42,17 @@ namespace Room.Core.Skills
         public IProcess Use(ISkilled initializer)
         {
             if (_itemType == GameItemTypes.SmallHealthPotion)
-                if (_hero.ItemsContainer.TryChangeCount(_itemType, -1))
+                if (_hero.Bag.TryChangeCount(_itemType, -1))
                     _timeLimiter.Do(() =>
                     {
-                        _hero.ChangeHP(5, initializer, this);
+                        _hpChanger.ApplyChange(_hero, 5, initializer, this);
                     });
             return null;
         }
 
         public string Key => Hero.SkillKey_Use_ + _itemType.Name;
 
-        public long Count => _hero.ItemsContainer.GetCount(_itemType);
+        public long Count => _hero.Bag.GetCount(_itemType);
 
         public long? Max => null;
         

@@ -28,6 +28,7 @@ namespace Room
             };
 
             _heroInfo.Hero = _appContext.Game.Hero;
+            _bag.Hero = _appContext.Game.Hero;
 
             _gameController = new GameController(_appContext.Game, _appContext.AwardsSource, _appContext.FinesSource, _appContext.Processor, _appContext.LevelMultiplier);
         }

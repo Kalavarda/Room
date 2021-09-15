@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="Room.Controls.BagControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Room.Controls" Background="#202020">
+    <ItemsControl x:Name="_itemsControl" MouseDown="_itemsControl_OnMouseDown" ContextMenuOpening="OnContextMenuOpening">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <WrapPanel/>
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <controls:BagItemControl Margin="2"/>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+        <ItemsControl.ContextMenu>
+            <ContextMenu ContextMenuOpening="OnContextMenuOpening">
+                <MenuItem Header="Надеть" x:Name="_miEquip" Click="OnEquipClick"/>
+            </ContextMenu>
+        </ItemsControl.ContextMenu>
+    </ItemsControl>
+</UserControl>

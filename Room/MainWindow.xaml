@@ -30,5 +30,9 @@
         <controls:ArenaSelector x:Name="_arenaSelector" Grid.Column="1"/>
 
         <Button Grid.Column="1" Grid.Row="1" Content="Начать" Click="OnStartClick"/>
+
+        <GroupBox Grid.RowSpan="2" Grid.Column="2">
+            <controls:BagControl x:Name="_bag"/>
+        </GroupBox>
     </Grid>
 </Window>

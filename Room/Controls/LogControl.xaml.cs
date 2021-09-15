@@ -25,7 +25,7 @@ namespace Room.Controls
 
                 if (_hero != null)
                 {
-                    _hero.ItemsContainer.Changed += ItemsContainer_Changed;
+                    _hero.Bag.Changed += ItemsContainer_Changed;
                     _hero.LevelChanged += Hero_LevelChanged;
                 }
             }

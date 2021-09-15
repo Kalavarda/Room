@@ -14,10 +14,12 @@ namespace Room.Core.Factories
         public Game Game { get; set; }
 
         private readonly ISoundPlayer _soundPlayer;
+        private readonly IHpChanger _hpChanger;
 
-        public HeroSkillProcessFactory(ISoundPlayer soundPlayer)
+        public HeroSkillProcessFactory(ISoundPlayer soundPlayer, IHpChanger hpChanger)
         {
             _soundPlayer = soundPlayer;
+            _hpChanger = hpChanger ?? throw new ArgumentNullException(nameof(hpChanger));
         }
 
         public IProcess Create(ISkilled initializer, ISkill skill)
@@ -28,7 +30,7 @@ namespace Room.Core.Factories
                 var dy = skill.MaxDistance * MathF.Sin(Game.Hero.LookDirection.Value);
                 var target = new RoundBounds(new PointF(Game.Hero.Position.X + dx, Game.Hero.Position.Y + dy), 0);
 
-                return new FireballProcess((IHasBounds)initializer, fireball, target, Game, _soundPlayer);
+                return new FireballProcess((IHasBounds)initializer, fireball, target, Game, _soundPlayer, _hpChanger);
             }
 
             if (skill is TeleportSkill teleport)

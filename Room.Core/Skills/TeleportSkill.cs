@@ -61,7 +61,8 @@ namespace Room.Core.Skills
                 _shiftDirection += MathF.PI;
 
             if (_skill.InvFrame)
-                ((IHasModifiers) initializer).Modifiers.InvFrame = true;
+                if (initializer is IHasModifiers hasModifiers)
+                    hasModifiers.Modifiers.InvFrame = true;
         }
 
         public void Process(TimeSpan delta)
@@ -91,7 +92,8 @@ namespace Room.Core.Skills
         private void BeforeComplete()
         {
             if (_skill.InvFrame)
-                ((IHasModifiers) _initializer).Modifiers.InvFrame = false;
+                if (_initializer is IHasModifiers hasModifiers)
+                    hasModifiers.Modifiers.InvFrame = false;
         }
 
         public void Stop()

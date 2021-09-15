@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using Room.Core.Abstract;
 
 namespace Room.Core.Models
@@ -12,6 +13,9 @@ namespace Room.Core.Models
         public bool TryChangeCount(IGameItemType itemType, long count)
         {
             if (itemType == null) throw new ArgumentNullException(nameof(itemType));
+
+            if (count == 0)
+                return true;
 
             return count < 0
                 ? Subtract(itemType, -count)
@@ -57,5 +61,7 @@ namespace Room.Core.Models
             else
                 return 0;
         }
+
+        public IReadOnlyCollection<IGameItemType> AllTypes => _dictionary.Where(p => p.Value > 0).Select(p => p.Key).ToArray();
     }
 }

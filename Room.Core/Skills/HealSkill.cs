@@ -3,11 +3,13 @@ using Kalavarda.Primitives;
 using Kalavarda.Primitives.Abstract;
 using Kalavarda.Primitives.Process;
 using Kalavarda.Primitives.Skills;
+using Room.Core.Abstract;
 
 namespace Room.Core.Skills
 {
     public class HealSkill: ISkill, IHasKey
     {
+        private readonly IHpChanger _hpChanger;
         private readonly TimeLimiter _timeLimiter;
 
         public float HpChange { get; }
@@ -23,13 +25,14 @@ namespace Room.Core.Skills
             _timeLimiter.Do(() =>
             {
                 var creature = (ICreatureExt) initializer;
-                creature.ChangeHP(HpChange, initializer, this);
+                _hpChanger.ApplyChange(creature, HpChange, initializer, this);
             });
             return null;
         }
 
-        public HealSkill(float hpChange, TimeSpan interval)
+        public HealSkill(float hpChange, TimeSpan interval, IHpChanger hpChanger)
         {
+            _hpChanger = hpChanger ?? throw new ArgumentNullException(nameof(hpChanger));
             HpChange = hpChange;
             _timeLimiter = new TimeLimiter(interval);
         }

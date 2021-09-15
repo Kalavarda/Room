@@ -43,18 +43,20 @@ namespace Room.Core.Skills
         private readonly Game _game;
         private readonly ISoundPlayer _soundPlayer;
         private readonly IRandom _random;
+        private readonly IHpChanger _hpChanger;
         private readonly ICollection<AreaBase> _areas = new List<AreaBase>();
         private readonly DateTime _startTime = DateTime.Now;
 
         public event Action<IProcess> Completed;
 
-        public RoundAreaProcess(ISkilled initializer, RoundAreaSkill skill, Game game, ISoundPlayer soundPlayer, IRandom random)
+        public RoundAreaProcess(ISkilled initializer, RoundAreaSkill skill, Game game, ISoundPlayer soundPlayer, IRandom random, IHpChanger hpChanger)
         {
             _initializer = initializer ?? throw new ArgumentNullException(nameof(initializer));
             _skill = skill ?? throw new ArgumentNullException(nameof(skill));
             _game = game ?? throw new ArgumentNullException(nameof(game));
             _soundPlayer = soundPlayer ?? throw new ArgumentNullException(nameof(soundPlayer));
             _random = random ?? throw new ArgumentNullException(nameof(random));
+            _hpChanger = hpChanger ?? throw new ArgumentNullException(nameof(hpChanger));
 
             CreateAreas(skill, (IChildItemsOwnerExt)initializer);
         }
@@ -122,7 +124,7 @@ namespace Room.Core.Skills
                         if (area.Bounds.DoesIntersect(b.Bounds))
                             if (b is ICreatureExt creature)
                                 if (creature != _initializer)
-                                    creature.ChangeHP(_skill.HpChange, _initializer, _skill);
+                                    _hpChanger.ApplyChange(creature, _skill.HpChange, _initializer, _skill);
                 BeforeComplete();
                 Completed?.Invoke(this);
             }

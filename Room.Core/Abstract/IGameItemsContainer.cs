@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Room.Core.Abstract
 {
@@ -7,6 +8,8 @@ namespace Room.Core.Abstract
         event Action<IGameItemType, long> Changed;
 
         long GetCount(IGameItemType itemType);
+
+        IReadOnlyCollection<IGameItemType> AllTypes { get; }
     }
 
     public interface IGameItemsContainerExt: IGameItemsContainer

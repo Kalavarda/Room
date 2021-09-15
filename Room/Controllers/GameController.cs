@@ -34,7 +34,7 @@ namespace Room.Controllers
 
             SetXP();
 
-            _game.Hero.ItemsContainer.Changed += ItemsContainer_Changed;
+            _game.Hero.Bag.Changed += ItemsContainer_Changed;
             _game.Hero.Died += Hero_Died;
             
             _game.ArenaChanged += _game_ArenaChanged;
@@ -104,7 +104,7 @@ namespace Room.Controllers
         {
             var awards = _awardsSource.GetAwards((BossBase)boss);
             foreach (var pair in awards)
-                _game.Hero.ItemsContainer.TryChangeCount(pair.Key, pair.Value);
+                _game.Hero.Bag.TryChangeCount(pair.Key, pair.Value);
 
             GameWindow.ShowInformation("Победа!", () =>
             {
@@ -117,7 +117,7 @@ namespace Room.Controllers
             _game.Hero.MoveSpeed.Value = 0;
             var fines = _finesSource.Fine();
             foreach (var pair in fines)
-                _game.Hero.ItemsContainer.TryChangeCount(pair.Key, pair.Value);
+                _game.Hero.Bag.TryChangeCount(pair.Key, pair.Value);
 
             GameWindow.ShowWarning("Не фортануло...", () =>
             {
@@ -131,7 +131,7 @@ namespace Room.Controllers
             _timer.Stop();
 
             _game.Hero.Died -= Hero_Died;
-            _game.Hero.ItemsContainer.Changed -= ItemsContainer_Changed;
+            _game.Hero.Bag.Changed -= ItemsContainer_Changed;
 
             _game.ArenaChanged -= _game_ArenaChanged;
         }

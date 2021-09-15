@@ -24,6 +24,10 @@ namespace Room.Core.Models
         
         public Uri ImageUri { get; private set; }
 
+        public ushort? RequiredLevel => null;
+
+        public ItemQuality Quality { get; } = ItemQuality.Ordinary;
+
         private GameItemTypes(string name)
         {
             Name = name;
