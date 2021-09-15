@@ -41,9 +41,9 @@ namespace Room.Controllers
             _timer.Tick += _timer_Tick;
         }
 
-        private void ItemsContainer_Changed(IGameItemType type, long count)
+        private void ItemsContainer_Changed(IHasName type, long count)
         {
-            if (type == GameItemTypes.XP)
+            if (type == XP.Instance)
             {
                 var overXP = _game.Hero.XP.Value + count - _game.Hero.XP.Max;
                 _game.Hero.XP.Value += count;

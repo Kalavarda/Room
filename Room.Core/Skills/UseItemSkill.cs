@@ -31,7 +31,7 @@ namespace Room.Core.Skills
             _hero.Bag.Changed += ItemsContainer_Changed;
         }
 
-        private void ItemsContainer_Changed(IGameItemType itemType, long count)
+        private void ItemsContainer_Changed(IHasName itemType, long count)
         {
             if (itemType != _itemType)
                 return;
@@ -58,6 +58,6 @@ namespace Room.Core.Skills
         
         public event Action<IHasCount<long>> CountChanged;
         
-        public Uri ImageUri => _itemType.ImageUri;
+        public Uri ImageUri => _itemType is IHasImage hasImage ? hasImage.ImageUri : null;
     }
 }

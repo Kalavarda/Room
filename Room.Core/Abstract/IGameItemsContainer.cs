@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using Kalavarda.Primitives.Abstract;
 
 namespace Room.Core.Abstract
 {
     public interface IGameItemsContainer
     {
-        event Action<IGameItemType, long> Changed;
+        event Action<IHasName, long> Changed;
 
-        long GetCount(IGameItemType itemType);
+        long GetCount(IHasName itemType);
 
-        IReadOnlyCollection<IGameItemType> AllTypes { get; }
+        IReadOnlyCollection<IHasName> AllTypes { get; }
     }
 
     public interface IGameItemsContainerExt: IGameItemsContainer
     {
-        bool TryChangeCount(IGameItemType itemType, long count);
+        bool TryChangeCount(IHasName itemType, long count);
     }
 }

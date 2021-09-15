@@ -8,8 +8,6 @@ namespace Room.Core.Models
     [DebuggerDisplay("{Name}")]
     public class GameItemTypes: IGameItemType, IHasImage
     {
-        public static IGameItemType XP { get; } = new GameItemTypes("Опыт");
-
         public static IGameItemType SmallHealthPotion { get; } = new GameItemTypes("Малое зелье HP")
         {
             UseInterval = TimeSpan.FromSeconds(5),
@@ -32,5 +30,14 @@ namespace Room.Core.Models
         {
             Name = name;
         }
+    }
+
+    public class XP: IHasName
+    {
+        public string Name => "Опыт";
+
+        public static IHasName Instance { get; } = new XP();
+
+        private XP() { }
     }
 }

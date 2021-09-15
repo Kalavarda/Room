@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Kalavarda.Primitives.Abstract;
 
 namespace Room.Core.Abstract
 {
@@ -7,6 +8,6 @@ namespace Room.Core.Abstract
         /// <summary>
         /// Создаёт награды
         /// </summary>
-        IReadOnlyDictionary<IGameItemType, long> GetAwards(IHasLevel killedBoss);
+        IReadOnlyDictionary<IHasName, long> GetAwards(IHasLevel killedBoss);
     }
 }

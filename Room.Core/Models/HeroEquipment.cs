@@ -61,14 +61,7 @@ namespace Room.Core.Models
             }
         }
 
-        public IModifiers Modifiers
-        {
-            get
-            {
-                RecalcModifiers();
-                return _modifiers;
-            }
-        }
+        public IModifiers Modifiers => _modifiers;
 
         private void RecalcModifiers()
         {

@@ -22,7 +22,7 @@ namespace Room.Core.Factories
         {
             return new ISkill[]
             {
-                new FireballSkill(TimeSpan.FromSeconds(2), 3, 4, -25, _skillProcessFactory) { Key = Hero.SkillKey_Fireball },
+                new FireballSkill(TimeSpan.FromSeconds(2), 3, 4, -50, _skillProcessFactory) { Key = Hero.SkillKey_Fireball },
                 new TeleportSkill(4, TimeSpan.FromSeconds(20), TimeSpan.FromSeconds(0.2), false, false, _skillProcessFactory) { Key = Hero.SkillKey_Teleport_Forward },
                 new TeleportSkill(1, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(0.2), true, true, _skillProcessFactory) { Key = Hero.SkillKey_Teleport_Backward },
                 new HealSkill(10, TimeSpan.FromSeconds(30), _hpChanger) { Key = Hero.SkillKey_Healing },

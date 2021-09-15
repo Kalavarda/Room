@@ -17,16 +17,22 @@ namespace Room.Core.Impl
             _random = random ?? throw new ArgumentNullException(nameof(random));
         }
 
-        public IReadOnlyDictionary<IGameItemType, long> GetAwards(IHasLevel killedBoss)
+        public IReadOnlyDictionary<IHasName, long> GetAwards(IHasLevel killedBoss)
         {
             var xp = _multiplier.GetValue(100, killedBoss.Level);
-            return new Dictionary<IGameItemType, long>
+            var awards = new Dictionary<IHasName, long>
             {
-                { GameItemTypes.XP, xp },
-                { GameItemTypes.SmallHealthPotion, _random.Int(1, 3) },
-                { EquipmentItem.OldNecklace, _random.Int(0, 1) },
-                { EquipmentItem.OldBelt, _random.Int(0, 1) }
+                { XP.Instance, xp },
+                { GameItemTypes.SmallHealthPotion, _random.Int(1, 3) }
             };
+
+            if (_random.Chance(10))
+                awards.Add(EquipmentItem.OldNecklace, 1);
+
+            if (_random.Chance(10))
+                awards.Add(EquipmentItem.OldBelt, 1);
+
+            return awards;
         }
     }
 }

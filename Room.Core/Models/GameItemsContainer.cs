@@ -2,15 +2,16 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Kalavarda.Primitives.Abstract;
 using Room.Core.Abstract;
 
 namespace Room.Core.Models
 {
     public class GameItemsContainer : IGameItemsContainerExt
     {
-        private readonly IDictionary<IGameItemType, long> _dictionary = new ConcurrentDictionary<IGameItemType, long>();
+        private readonly IDictionary<IHasName, long> _dictionary = new ConcurrentDictionary<IHasName, long>();
 
-        public bool TryChangeCount(IGameItemType itemType, long count)
+        public bool TryChangeCount(IHasName itemType, long count)
         {
             if (itemType == null) throw new ArgumentNullException(nameof(itemType));
 
@@ -22,7 +23,7 @@ namespace Room.Core.Models
                 : Add(itemType, count);
         }
 
-        private bool Add(IGameItemType itemType, long count)
+        private bool Add(IHasName itemType, long count)
         {
             // TODO: проверить лимит владения
 
@@ -36,7 +37,7 @@ namespace Room.Core.Models
             return true;
         }
 
-        private bool Subtract(IGameItemType itemType, long count)
+        private bool Subtract(IHasName itemType, long count)
         {
             if (_dictionary.ContainsKey(itemType))
             {
@@ -52,9 +53,9 @@ namespace Room.Core.Models
                 return false;
         }
 
-        public event Action<IGameItemType, long> Changed;
+        public event Action<IHasName, long> Changed;
         
-        public long GetCount(IGameItemType itemType)
+        public long GetCount(IHasName itemType)
         {
             if (_dictionary.ContainsKey(itemType))
                 return _dictionary[itemType];
@@ -62,6 +63,6 @@ namespace Room.Core.Models
                 return 0;
         }
 
-        public IReadOnlyCollection<IGameItemType> AllTypes => _dictionary.Where(p => p.Value > 0).Select(p => p.Key).ToArray();
+        public IReadOnlyCollection<IHasName> AllTypes => _dictionary.Where(p => p.Value > 0).Select(p => p.Key).ToArray();
     }
 }

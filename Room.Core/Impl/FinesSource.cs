@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Kalavarda.Primitives.Abstract;
 using Room.Core.Abstract;
 using Room.Core.Models;
 
@@ -14,12 +15,12 @@ namespace Room.Core.Impl
             _hero = hero ?? throw new ArgumentNullException(nameof(hero));
         }
 
-        public IReadOnlyDictionary<IGameItemType, long> Fine()
+        public IReadOnlyDictionary<IHasName, long> Fine()
         {
             var xp = (int)MathF.Round(_hero.XP.Value * 0.1f);
-            return new Dictionary<IGameItemType, long>
+            return new Dictionary<IHasName, long>
             {
-                { GameItemTypes.XP, -xp }
+                { XP.Instance, -xp }
             };
         }
     }

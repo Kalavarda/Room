@@ -24,7 +24,7 @@ namespace Room.Core.Tests
 
             var source = new AwardSource(new LevelMultiplier(), _random.Object);
             var awards = source.GetAwards(_boss.Object);
-            Assert.AreEqual(expectedXP, awards.First(a => a.Key == GameItemTypes.XP).Value);
+            Assert.AreEqual(expectedXP, awards.First(a => a.Key == XP.Instance).Value);
         }
     }
 }

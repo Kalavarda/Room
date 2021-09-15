@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Kalavarda.Primitives.Abstract;
 using Kalavarda.Primitives.WPF;
 using Room.Core.Abstract;
 using Room.Core.Models;
@@ -29,11 +31,11 @@ namespace Room.Controls
             }
         }
 
-        private void Bag_Changed(IGameItemType itemType, long count)
+        private void Bag_Changed(IHasName itemType, long count)
         {
             this.Do(() =>
             {
-                _itemsControl.ItemsSource = _hero.Bag.AllTypes;
+                _itemsControl.ItemsSource = _hero.Bag.AllTypes.OfType<IHasImage>();
             });
         }
 

@@ -41,6 +41,9 @@ namespace Room.Core.Models
             Level = level;
             HP.SetMax();
             HP.ValueMin += HP_ValueMin;
+
+            Modifiers.Attack = level;
+            Modifiers.Defence = level;
         }
 
         public void ChangeHP(float value, ISkilled initializer, ISkill skill)

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Kalavarda.Primitives.Abstract;
 using Kalavarda.Primitives.Utils;
 using Kalavarda.Primitives.WPF;
-using Room.Core.Abstract;
 using Room.Core.Models;
 
 namespace Room.Controls
@@ -36,7 +36,7 @@ namespace Room.Controls
             AddLine($"Вы получаете уровень {_hero.Level}");
         }
 
-        private void ItemsContainer_Changed(IGameItemType type, long count)
+        private void ItemsContainer_Changed(IHasName type, long count)
         {
             if (count > 0)
                 AddLine($"Вы получаете {count.ToStr()} [{type.Name}]");

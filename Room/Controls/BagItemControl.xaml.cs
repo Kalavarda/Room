@@ -21,9 +21,7 @@ namespace Room.Controls
                 if (_itemType == value)
                 {
                     if (_itemType is IHasImage hasImage)
-                    {
                         _image.Source = new BitmapImage(hasImage.ImageUri);
-                    }
                 }
             }
         }
