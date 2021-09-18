@@ -31,6 +31,9 @@ namespace Room.Core.Factories
             if (skill is RoundAreaSkill rAreaSkill)
                 return new RoundAreaProcess(initializer, rAreaSkill, _game, _soundPlayer, _random, _hpChanger);
 
+            if (skill is BombSkill bomb)
+                return new BombProcess(initializer, bomb, _game, _soundPlayer, _random, _hpChanger);
+
             throw new NotImplementedException();
         }
     }

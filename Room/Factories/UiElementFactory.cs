@@ -16,6 +16,9 @@ namespace Room.Factories
             if (childItem is RoundArea area)
                 return new AreaControl(area);
 
+            if (childItem is Bomb bomb)
+                return new BombControl(bomb);
+
             throw new System.NotImplementedException();
         }
     }

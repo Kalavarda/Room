@@ -22,10 +22,9 @@ namespace Room.Core.Skills
 
         public float HpChange { get; }
 
-        public float Count { get; }
+        public int Count { get; }
 
-        public RoundAreaSkill(float maxDistance, TimeSpan interval, TimeSpan waitTime, float hpChange, float count,
-            ISkillProcessFactory processFactory)
+        public RoundAreaSkill(float maxDistance, TimeSpan interval, TimeSpan waitTime, float hpChange, int count, ISkillProcessFactory processFactory)
             :base(maxDistance, interval, processFactory, TimeSpan.FromSeconds(interval.TotalSeconds * RandomImpl.Instance.Double()))
         {
             WaitTime = waitTime;
@@ -111,8 +110,7 @@ namespace Room.Core.Skills
             if (_initializer is ICreature cr)
                 if (cr.IsDead)
                 {
-                    BeforeComplete();
-                    Completed?.Invoke(this);
+                    Stop();
                     return;
                 }
 
@@ -125,8 +123,7 @@ namespace Room.Core.Skills
                             if (b is ICreatureExt creature)
                                 if (creature != _initializer)
                                     _hpChanger.ApplyChange(creature, _skill.HpChange, _initializer, _skill);
-                BeforeComplete();
-                Completed?.Invoke(this);
+                Stop();
             }
 
             foreach (var area in _areas)

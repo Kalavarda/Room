@@ -27,6 +27,10 @@ namespace Room
                         PlayFile("Blow_01.mp3");
                         break;
 
+                    case BombProcess.Blow:
+                        PlayFile("BombBlow.mp3");
+                        break;
+
                     default:
                         throw new NotImplementedException();
                 }

@@ -38,7 +38,7 @@ namespace Room.Core.Impl
                 if (defModifiers.InvFrame)
                     return 0;
 
-                var defRatio = _levelMultiplier.GetRatio(defModifiers.Defence);
+                var defRatio = _levelMultiplier.GetRatio(defModifiers.Defence / 10);
                 hpChange /= defRatio;
             }
 
@@ -46,7 +46,7 @@ namespace Room.Core.Impl
             {
                 var attackModifiers = hasModif.Modifiers;
 
-                var attackRatio = _levelMultiplier.GetRatio(attackModifiers.Attack);
+                var attackRatio = _levelMultiplier.GetRatio(attackModifiers.Attack / 10);
                 hpChange *= attackRatio;
             }
 

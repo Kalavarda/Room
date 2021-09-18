@@ -1,0 +1,7 @@
+﻿<UserControl x:Class="Room.Controls.BombControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Ellipse Fill="#FF800000" StrokeThickness="0.1" Stroke="Yellow"/>
+    </Grid>
+</UserControl>

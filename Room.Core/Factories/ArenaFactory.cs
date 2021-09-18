@@ -2,6 +2,7 @@
 using Kalavarda.Primitives.Abstract;
 using Kalavarda.Primitives.Skills;
 using Room.Core.Abstract;
+using Room.Core.Impl;
 using Room.Core.Models;
 
 namespace Room.Core.Factories
@@ -22,7 +23,7 @@ namespace Room.Core.Factories
             switch (level)
             {
                 default:
-                    var boss = new Boss(level, _bossSkillProcessFactory);
+                    var boss = new Boss(level, new BossSkillsFactory(_bossSkillProcessFactory));
                     boss.HP.Max = _levelMultiplier.GetValue(1000, level);
                     boss.HP.SetMax();
 

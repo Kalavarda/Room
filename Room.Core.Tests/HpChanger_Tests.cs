@@ -42,7 +42,7 @@ namespace Room.Core.Tests
         }
 
         [TestCase(0, -10)]
-        [TestCase(2, -30)]
+        [TestCase(20, -30)]
         public void Attack_Test(float attack, float expectedHp)
         {
             var hp = new RangeF { Max = 100, Value = 50 };
@@ -61,7 +61,7 @@ namespace Room.Core.Tests
         }
 
         [TestCase(0, -10)]
-        [TestCase(1, -5)]
+        [TestCase(10, -5)]
         public void Defence_Test(float defence, float expectedHp)
         {
             var hp = new RangeF { Max = 100, Value = 50 };

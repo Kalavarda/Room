@@ -8,12 +8,16 @@
 
   <ItemGroup>
     <None Remove="Resources\Blow_01.mp3" />
+    <None Remove="Resources\BombBlow.mp3" />
     <None Remove="Resources\Fireball_01.mp3" />
     <None Remove="Resources\Fireball_Simple.mp3" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Resources\Blow_01.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\BombBlow.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Fireball_01.mp3">

@@ -94,10 +94,6 @@ namespace Room.Core.Models
             };
 
             _skills = skillsFactory.Create(this).ToArray();
-
-            //Bag.TryChangeCount(GameItemTypes.SmallHealthPotion, 3);
-            //Bag.TryChangeCount(EquipmentItem.OldNecklace, 1);
-            //Bag.TryChangeCount(EquipmentItem.OldBelt, 1);
         }
 
         /// <summary>
